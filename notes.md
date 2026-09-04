@@ -1,0 +1,1 @@
+A full-stack chess application built for BYU CS 240. It features a networked client-server architecture, a command-line client, a server to manage users and games, and shared modules for game rules and state management.
