@@ -47,4 +47,13 @@ public class ChessPosition {
 //        throw new RuntimeException("Not implemented");
         return this.c;
     }
+
+    public int toInt() {
+        return 10 * this.getRow() + this.getColumn();
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.getRow() + ", " +  this.getColumn() + ")";
+    }
 }
