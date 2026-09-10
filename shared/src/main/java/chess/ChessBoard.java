@@ -66,8 +66,6 @@ public class ChessBoard {
 
         PlacePieces(ChessGame.TeamColor.BLACK);
         PlacePieces(ChessGame.TeamColor.WHITE);
-
-
     }
 
     public void PlacePieces(ChessGame.TeamColor color) {
@@ -77,27 +75,34 @@ public class ChessBoard {
             row = 1;
         }
 
+        ChessPiece currentPiece;
+        ChessPosition currentPosition;
+
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
         currentPosition = new ChessPosition(row, 1);
         activePieces.put(currentPosition, currentPiece);
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
         currentPosition = new ChessPosition(row, 8);
         activePieces.put(currentPosition, currentPiece);
+
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
         currentPosition = new ChessPosition(row, 2);
         activePieces.put(currentPosition, currentPiece);
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
         currentPosition = new ChessPosition(row, 7);
         activePieces.put(currentPosition, currentPiece);
+
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
         currentPosition = new ChessPosition(row, 3);
         activePieces.put(currentPosition, currentPiece);
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
         currentPosition = new ChessPosition(row, 6);
         activePieces.put(currentPosition, currentPiece);
+
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
         currentPosition = new ChessPosition(row, 4);
         activePieces.put(currentPosition, currentPiece);
+
         currentPiece = new ChessPiece(color, ChessPiece.PieceType.KING);
         currentPosition = new ChessPosition(row, 5);
         activePieces.put(currentPosition, currentPiece);
