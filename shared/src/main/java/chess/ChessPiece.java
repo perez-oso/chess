@@ -1,7 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents a single chess piece
@@ -69,6 +68,26 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> possibleMoves = new ArrayList<ChessMove>() {};
+
+        ChessPosition testPosition;
+
+        switch (this.pieceType) {
+            case PieceType.PAWN:
+                testPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
+
+                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                    //                possibleMoves.add(new ChessMove(myPosition, testPosition, ??)) // add it to the list
+                }
+            case PieceType.ROOK:
+            case PieceType.KNIGHT:
+            case PieceType.BISHOP:
+            case PieceType.KING:
+            case PieceType.QUEEN:
+                throw new RuntimeException("Not implemented");
+        }
+
+        return possibleMoves;
     }
 }
