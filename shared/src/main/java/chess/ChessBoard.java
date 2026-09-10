@@ -11,10 +11,24 @@ import java.util.*;
  */
 public class ChessBoard {
 
-    Map<String, ChessPiece> activePieces;
+    Map<ChessPosition, ChessPiece> activePieces;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessBoard that = (ChessBoard) o;
+        return Objects.equals(activePieces, that.activePieces);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(activePieces);
+    }
 
     public ChessBoard() {
-        activePieces = new HashMap<String, ChessPiece>() {};
+        activePieces = new HashMap<ChessPosition, ChessPiece>() {};
         return;
     }
 
@@ -24,11 +38,10 @@ public class ChessBoard {
      * @param position where to add the piece to
      * @param piece    the piece to add
      */
+
     public void addPiece(ChessPosition position, ChessPiece piece) {
 //        throw new RuntimeException("Not implemented");
-        this.activePieces.put(piece.toString(), piece);
-
-
+        this.activePieces.put(position, piece);
     }
 
     /**
@@ -39,7 +52,8 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        return this.activePieces.get(position);
     }
 
     /**
@@ -47,6 +61,57 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        activePieces.clear();
+
+        PlacePieces(ChessGame.TeamColor.BLACK);
+        PlacePieces(ChessGame.TeamColor.WHITE);
+
+
+    }
+
+    public void PlacePieces(ChessGame.TeamColor color) {
+        int row = 8;
+
+        if (color == ChessGame.TeamColor.WHITE) {
+            row = 1;
+        }
+
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        currentPosition = new ChessPosition(row, 1);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+        currentPosition = new ChessPosition(row, 8);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+        currentPosition = new ChessPosition(row, 2);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+        currentPosition = new ChessPosition(row, 7);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+        currentPosition = new ChessPosition(row, 3);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+        currentPosition = new ChessPosition(row, 6);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.QUEEN);
+        currentPosition = new ChessPosition(row, 4);
+        activePieces.put(currentPosition, currentPiece);
+        currentPiece = new ChessPiece(color, ChessPiece.PieceType.KING);
+        currentPosition = new ChessPosition(row, 5);
+        activePieces.put(currentPosition, currentPiece);
+
+        row = 7;
+
+        if (color == ChessGame.TeamColor.WHITE) {
+            row = 2;
+        }
+
+        for (int col = 1; col <= 8; col++) {
+            currentPiece = new ChessPiece(color, ChessPiece.PieceType.PAWN);
+            currentPosition = new ChessPosition(row, col);
+            activePieces.put(currentPosition, currentPiece);
+        }
     }
 }
