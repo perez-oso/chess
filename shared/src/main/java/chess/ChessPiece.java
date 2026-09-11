@@ -107,6 +107,21 @@ public class ChessPiece {
                 RookTests(board, myPosition, possibleMoves);
 
             case PieceType.KNIGHT:
+                int row, col;
+
+                int[][] offsets = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+
+                for (int i = 0; i < 8; i++) {
+                    row = myPosition.getRow() + offsets[i][0];
+                    col = myPosition.getColumn() + offsets[i][1];
+
+                    if (0 < row && row <= 8 && 0 < col && col <= 8) {
+                        testPosition = new ChessPosition(row, col);
+                        if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                            possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                        }
+                    }
+                }
             case PieceType.BISHOP:
                 BishopTests(board, myPosition, possibleMoves);
 
