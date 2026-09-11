@@ -76,10 +76,10 @@ public class ChessPiece {
         switch (this.pieceType) {
             case PieceType.PAWN:
                 int inc = -1;
-
                 if (this.getTeamColor() == ChessGame.TeamColor.WHITE) {
                     inc = 1;
                 }
+
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn());
                 if (board.getPiece(testPosition) == null) {
                     possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
@@ -95,7 +95,7 @@ public class ChessPiece {
                     possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
                 } // if right diagonal is empty or capturable
 
-                if (myPosition.getRow() % 5 == 2) { // 2-square advance
+                if (myPosition.getRow() % 5 == 2) { // if 2-square advance is permissible
                     testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
 
                     if (board.getPiece(testPosition) == null) {
@@ -103,8 +103,47 @@ public class ChessPiece {
                     }
                 }
 
-                // add logic for 2-square advance
             case PieceType.ROOK:
+                for (int i = myPosition.getRow() + 1; i <= 8; i++) {
+                    testPosition = new ChessPosition(i, myPosition.getColumn());
+
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    } else {
+                        break;
+                    }
+                }
+
+                for (int i = myPosition.getRow() - 1; i > 0; i--) {
+                    testPosition = new ChessPosition(i, myPosition.getColumn());
+
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    } else {
+                        break;
+                    }
+                }
+
+                for (int i = myPosition.getColumn() + 1; i <= 8; i++) {
+                    testPosition = new ChessPosition(myPosition.getColumn(), i);
+
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    } else {
+                        break;
+                    }
+                }
+
+                for (int i = myPosition.getColumn() - 1; i > 0; i--) {
+                    testPosition = new ChessPosition(myPosition.getColumn(), i);
+
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    } else {
+                        break;
+                    }
+                }
+
             case PieceType.KNIGHT:
             case PieceType.BISHOP:
             case PieceType.KING:
