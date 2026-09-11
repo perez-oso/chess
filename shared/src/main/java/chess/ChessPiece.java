@@ -95,9 +95,15 @@ public class ChessPiece {
                     possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
                 } // if right diagonal is empty or capturable
 
-                testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
+                if (myPosition.getRow() % 5 == 2) { // 2-square advance
+                    testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
 
-                // add logic for pawn moving 2 spaces at start
+                    if (board.getPiece(testPosition) == null) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    }
+                }
+
+                // add logic for 2-square advance
             case PieceType.ROOK:
             case PieceType.KNIGHT:
             case PieceType.BISHOP:
