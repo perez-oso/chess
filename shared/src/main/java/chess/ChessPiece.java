@@ -95,7 +95,8 @@ public class ChessPiece {
                     possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
                 } // if right diagonal is empty or capturable
 
-                if (myPosition.getRow() % 5 == 2) { // if 2-square advance is permissible
+                if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7) ||
+                        (this.getTeamColor() == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2)) { // if 2-square advance is permissible
                     testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
 
                     if (board.getPiece(testPosition) == null) {
@@ -122,6 +123,7 @@ public class ChessPiece {
                         }
                     }
                 }
+
             case PieceType.BISHOP:
                 BishopTests(board, myPosition, possibleMoves);
 
