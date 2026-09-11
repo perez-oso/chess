@@ -105,11 +105,39 @@ public class ChessPiece {
 
             case PieceType.ROOK:
                 RookTests(board, myPosition, possibleMoves);
+
             case PieceType.KNIGHT:
             case PieceType.BISHOP:
                 BishopTests(board, myPosition, possibleMoves);
+
             case PieceType.KING:
-//                testPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
+                if (myPosition.getRow() < 8) {
+                    testPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                    }
+                }
+
+                if (myPosition.getRow() > 0) {
+                    testPosition = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn());
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                    }
+                }
+
+                if (myPosition.getColumn() < 8) {
+                    testPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                    }
+                }
+
+                if (myPosition.getColumn() > 0) {
+                    testPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 1);
+                    if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                    }
+                }
             case PieceType.QUEEN:
                 RookTests(board, myPosition, possibleMoves);
                 BishopTests(board, myPosition, possibleMoves);
