@@ -75,11 +75,29 @@ public class ChessPiece {
 
         switch (this.pieceType) {
             case PieceType.PAWN:
-                testPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
+                int inc = -1;
 
-                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
-                    //                possibleMoves.add(new ChessMove(myPosition, testPosition, ??)) // add it to the list
+                if (this.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    inc = 1;
                 }
+                testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn());
+                if (board.getPiece(testPosition) == null) {
+                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                } // if space in front is empty
+
+                testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() - inc);
+                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                } // if left diagonal is empty or capturable
+
+                testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() + inc);
+                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
+                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                } // if right diagonal is empty or capturable
+
+                testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
+
+                // add logic for pawn moving 2 spaces at start
             case PieceType.ROOK:
             case PieceType.KNIGHT:
             case PieceType.BISHOP:
