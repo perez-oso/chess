@@ -90,13 +90,13 @@ public class ChessPiece {
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() - inc);
                 if (board.getPiece(testPosition) != null && (board.getPiece(testPosition).getTeamColor() != thisColor)) {
                     pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
-                    System.out.println("DEBUG: " + this.getTeamColor() + " " + this.pieceType + " - " + board.getPiece(testPosition).getTeamColor() + " " + board.getPiece(testPosition).pieceType);
+//                    System.out.println("DEBUG: " + this.getTeamColor() + " " + this.pieceType + " - " + board.getPiece(testPosition).getTeamColor() + " " + board.getPiece(testPosition).pieceType);
                 } // if first diagonal is empty or capturable
 
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() + inc);
                 if (board.getPiece(testPosition) != null && (board.getPiece(testPosition).getTeamColor() != thisColor)) {
                     pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
-                    System.out.println("DEBUG: " + this.getTeamColor() + " " + this.pieceType + " - " + board.getPiece(testPosition).getTeamColor() + " " + board.getPiece(testPosition).pieceType);
+//                    System.out.println("DEBUG: " + this.getTeamColor() + " " + this.pieceType + " - " + board.getPiece(testPosition).getTeamColor() + " " + board.getPiece(testPosition).pieceType);
                 } // if second diagonal is empty or capturable
 
                 if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 2) ||
