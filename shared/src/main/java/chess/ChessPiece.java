@@ -76,31 +76,46 @@ public class ChessPiece {
         switch (this.pieceType) {
             case PieceType.PAWN:
                 int inc = -1;
+                Collection<ChessMove> pawnMovesBeforePromotion = new ArrayList<ChessMove>() {};
+
                 if (this.getTeamColor() == ChessGame.TeamColor.WHITE) {
                     inc = 1;
                 }
 
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn());
                 if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null));
                 } // if space in front is empty
 
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() - inc);
-                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                if (board.getPiece(testPosition) != null && (board.getPiece(testPosition).pieceType != this.pieceType)) {
+                    pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
                 } // if left diagonal is empty or capturable
 
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() + inc);
-                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).pieceType != this.pieceType) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
+                if (board.getPiece(testPosition) != null && (board.getPiece(testPosition).pieceType != this.pieceType)) {
+                    pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
                 } // if right diagonal is empty or capturable
+
+                if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 2) ||
+                        (this.getTeamColor() == ChessGame.TeamColor.WHITE && myPosition.getRow() == 7)) { // if promotion is possible
+                    for (ChessMove move : pawnMovesBeforePromotion) {
+                        possibleMoves.add(new ChessMove(move.start, move.end, PieceType.QUEEN));
+                        possibleMoves.add(new ChessMove(move.start, move.end, PieceType.BISHOP));
+                        possibleMoves.add(new ChessMove(move.start, move.end, PieceType.KNIGHT));
+                        possibleMoves.add(new ChessMove(move.start, move.end, PieceType.ROOK));
+                    }
+                } else {
+                    possibleMoves = pawnMovesBeforePromotion;
+                }
 
                 if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7) ||
                         (this.getTeamColor() == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2)) { // if 2-square advance is permissible
                     testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
+                    ChessPosition oneAhead = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn());
 
-                    if (board.getPiece(testPosition) == null) {
-                        possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
+                    if (board.getPiece(testPosition) == null && board.getPiece(oneAhead) == null) {
+                        possibleMoves.add(new ChessMove(myPosition, testPosition, null));
                     }
                 }
                 break;
@@ -160,7 +175,21 @@ public class ChessPiece {
                 RookTests(board, myPosition, possibleMoves);
                 BishopTests(board, myPosition, possibleMoves);
         }
+
+//            printMoves(possibleMoves);
             return possibleMoves;
+    }
+
+    void printMoves(Collection<ChessMove> moves) {
+        System.out.print("{");
+
+        for (ChessMove move : moves) {
+            System.out.print("{");
+            System.out.print(move.toString());
+            System.out.print("}");
+        }
+        System.out.println("}");
+
     }
 
         void RookTests(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves) {

@@ -50,6 +50,6 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return "(" + this.getRow() + ", " +  this.getColumn() + ")";
+        return "{" + this.getRow() + ", " +  this.getColumn() + "}";
     }
 }
