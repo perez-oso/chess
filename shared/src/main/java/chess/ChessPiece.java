@@ -103,10 +103,10 @@ public class ChessPiece {
                         possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType));
                     }
                 }
-
+                break;
             case PieceType.ROOK:
                 RookTests(board, myPosition, possibleMoves);
-
+                break;
             case PieceType.KNIGHT:
                 int row, col;
 
@@ -123,10 +123,10 @@ public class ChessPiece {
                         }
                     }
                 }
-
+                break;
             case PieceType.BISHOP:
                 BishopTests(board, myPosition, possibleMoves);
-
+                break;
             case PieceType.KING:
                 if (myPosition.getRow() < 8) {
                     testPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
@@ -155,6 +155,7 @@ public class ChessPiece {
                         possibleMoves.add(new ChessMove(myPosition, testPosition, this.pieceType)); // add it to the list
                     }
                 }
+                break;
             case PieceType.QUEEN:
                 RookTests(board, myPosition, possibleMoves);
                 BishopTests(board, myPosition, possibleMoves);
