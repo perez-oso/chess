@@ -153,7 +153,19 @@ public class ChessBoard {
     }
 
     @Override
-    public ChessBoard Copy(ChessBoard boardToCopy, ChessMove move) {
+    public ChessBoard Copy() {
+        ChessBoard newBoard = new ChessBoard();
+        ChessPiece currentPiece;
+
+        for (var entry : this.activePieces.keySet()) {
+            currentPiece = this.activePieces.get(entry);
+            newBoard.addPiece(entry, currentPiece);
+        }
+
+        return newBoard;
+    }
+
+    public ChessBoard moveCopy(ChessMove move) {
         ChessBoard newBoard = new ChessBoard();
         ChessPiece currentPiece;
 

@@ -66,10 +66,9 @@ public class ChessGame {
     //must account for moves that would result in check
     public void makeMove(ChessMove move) throws InvalidMoveException {
 //        throw new RuntimeException("Not implemented");
+        ChessBoard newBoard = this.getBoard().Copy(move);
 
-        ChessBoard newBoard = this.board.cop;
-        newBoard.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition()));
-        for (var entry : this.board.)
+        if (this.isInCheck())
 
     }
 
