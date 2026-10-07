@@ -2,6 +2,8 @@ package chess;
 
 import java.util.*;
 
+import static chess.ChessPiece.PieceType.KING;
+
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -31,6 +33,8 @@ public class ChessBoard {
         activePieces = new HashMap<ChessPosition, ChessPiece>() {};
         return;
     }
+
+
 
     /**
      * Adds a chess piece to the chessboard
@@ -103,7 +107,7 @@ public class ChessBoard {
         currentPosition = new ChessPosition(row, 4);
         activePieces.put(currentPosition, currentPiece);
 
-        currentPiece = new ChessPiece(color, ChessPiece.PieceType.KING);
+        currentPiece = new ChessPiece(color, KING);
         currentPosition = new ChessPosition(row, 5);
         activePieces.put(currentPosition, currentPiece);
 
@@ -119,4 +123,32 @@ public class ChessBoard {
             activePieces.put(currentPosition, currentPiece);
         }
     }
+
+    public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
+        ChessPosition kingPosition = null;
+
+        for (var entry : this.activePieces.entrySet())
+            if (entry.getValue().getTeamColor() == teamColor) {
+                if (entry.getValue().getPieceType() == KING) {
+                    kingPosition = entry.getKey();
+                    break;
+                }
+            }
+
+        return kingPosition;
+    }
+
+//    public Collection<ChessPosition> getTeamMoves(ChessGame.TeamColor teamColor) {
+//        Collection<ChessPosition> teamMoves;
+//        ChessPosition kingPosition = null;
+//
+//        for (var entry : this.activePieces.entrySet())
+//            if (entry.getValue().getTeamColor() == teamColor) {
+//                if (entry.getValue().getPieceType() == KING) {
+//                    kingPosition = entry.getKey();
+//                } else {
+//                    for (var )
+//                }
+//            }
+//    }
 }
