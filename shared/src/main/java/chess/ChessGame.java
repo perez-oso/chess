@@ -61,8 +61,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-//        throw new RuntimeException("Not implemented");
-        ChessPiece currentPiece = this.board.getPiece(move.getStartPosition());
+        throw new RuntimeException("Not implemented");
+//        ChessPiece currentPiece = this.board.getPiece(move.getStartPosition());
 //        Collection<ChessMove> validMoves = currentPiece.pieceMoves(this.board, move.getStartPosition());
 //        if (!validMoves.contains(move.getEndPosition())) {
 //
@@ -76,11 +76,17 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
 //        throw new RuntimeException("Not implemented");
-        ChessPosition kingPosition = this.board.getKingPosition(teamColor);
-        Collection<ChessMove> teamMoves = this.board.getTeamMoves(teamColor);
+        TeamColor opposingTeamColor = TeamColor.WHITE;
 
-        for (var entry : teamMoves) {
-            if ((entry.getStartPosition() != kingPosition) && (entry.getEndPosition() == kingPosition)) {
+        if (teamColor == TeamColor.WHITE) {
+            opposingTeamColor = TeamColor.BLACK;
+        }
+
+        ChessPosition kingPosition = this.board.getKingPosition(teamColor);
+        Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
+
+        for (var entry : opposingTeamMoves) {
+            if (entry.getEndPosition() == kingPosition) {
                 return true;
             }
         }
@@ -95,7 +101,26 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        TeamColor opposingTeamColor = TeamColor.WHITE;
+
+        if (teamColor == TeamColor.WHITE) {
+            opposingTeamColor = TeamColor.BLACK;
+        }
+
+        ChessPosition kingPosition = this.board.getKingPosition(teamColor);
+        Collection<ChessMove> kingMoves = this.board.getPiece(kingPosition).pieceMoves(this.board, kingPosition);
+        Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
+
+        for (var entry : opposingTeamMoves) {
+            for (var kingEntry : kingMoves) {
+                if (entry.getEndPosition() == kingEntry.getEndPosition()) {
+                    kingMoves.remove(kingEntry);
+                }
+            }
+        }
+
+        return kingMoves.size() == 0;
     }
 
     /**
@@ -107,7 +132,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
 //        throw new RuntimeException("Not implemented");
-        return this.board.getTeamMoves(teamColor).size() == 0;
+        return (!this.isInCheck(teamColor)) && (this.board.getTeamMoves(teamColor).size() == 0);
     }
 
 
