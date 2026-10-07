@@ -75,9 +75,9 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-//        throw new RuntimeException("Not implemented");
-        ChessPiece king;
-        Collection<ChessMove> teamMoves;
+        throw new RuntimeException("Not implemented");
+//        ChessPiece king;
+//        Collection<ChessMove> teamMoves;
 
     }
 
@@ -99,8 +99,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        throw new RuntimeException("Not implemented");
+        return this.board.getTeamMoves(teamColor).size() == 0;
     }
+
 
     /**
      * Sets this game's chessboard to a given board

@@ -138,17 +138,15 @@ public class ChessBoard {
         return kingPosition;
     }
 
-//    public Collection<ChessPosition> getTeamMoves(ChessGame.TeamColor teamColor) {
-//        Collection<ChessPosition> teamMoves;
-//        ChessPosition kingPosition = null;
-//
-//        for (var entry : this.activePieces.entrySet())
-//            if (entry.getValue().getTeamColor() == teamColor) {
-//                if (entry.getValue().getPieceType() == KING) {
-//                    kingPosition = entry.getKey();
-//                } else {
-//                    for (var )
-//                }
-//            }
-//    }
+    public Collection<ChessMove> getTeamMoves(ChessGame.TeamColor teamColor) {
+        Collection<ChessMove> teamMoves = new ArrayList<ChessMove>();
+
+        for (var entry : this.activePieces.entrySet())
+            if (entry.getValue().getTeamColor() == teamColor) {
+                Collection<ChessMove> pieceMoves = entry.getValue().pieceMoves(this, entry.getKey());
+                teamMoves.addAll(pieceMoves);
+            }
+
+        return teamMoves;
+    }
 }
