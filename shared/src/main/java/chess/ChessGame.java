@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * A class that can manage a chess game, making moves on a board
@@ -50,7 +51,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return this.board.getPiece(startPosition).pieceMoves(board, startPosition);
+        return this.board.getPiece(startPosition).pieceMoves(this.board, startPosition);
 //        throw new RuntimeException("Not implemented");
     }
 
@@ -86,7 +87,9 @@ public class ChessGame {
         Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
 
         for (var entry : opposingTeamMoves) {
-            if (entry.getEndPosition() == kingPosition) {
+//            System.out.println("DEBUG 89: " + entry.getEndPosition().toString() + " " + kingPosition.toString() + " " + (Objects.equals(entry.getEndPosition().toString(), kingPosition.toString())));
+            if (Objects.equals(entry.getEndPosition(), kingPosition)) {
+//                System.out.println("DEBUG: kingpos in oppmoves");
                 return true;
             }
         }
@@ -110,17 +113,20 @@ public class ChessGame {
 
         ChessPosition kingPosition = this.board.getKingPosition(teamColor);
         Collection<ChessMove> kingMoves = this.board.getPiece(kingPosition).pieceMoves(this.board, kingPosition);
+        System.out.println("DEBUG 116: kingmoves " + kingMoves.toString());
+        int kingMoveSize = kingMoves.size();
         Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
 
         for (var entry : opposingTeamMoves) {
             for (var kingEntry : kingMoves) {
-                if (entry.getEndPosition() == kingEntry.getEndPosition()) {
+                if (Objects.equals(entry.getEndPosition(), kingEntry.getEndPosition())) {
                     kingMoves.remove(kingEntry);
                 }
             }
         }
 
-        return kingMoves.size() == 0;
+        System.out.println("DEBUG 128: kingmoves " + kingMoves.toString());
+        return (kingMoveSize > 0) && (kingMoves.size() == 0);
     }
 
     /**

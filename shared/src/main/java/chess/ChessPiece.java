@@ -166,6 +166,7 @@ public class ChessPiece {
                 BishopTests(board, myPosition, possibleMoves);
         }
 
+        System.out.println("DEBUG: possible moves " + possibleMoves.toString());
             return possibleMoves;
     }
 

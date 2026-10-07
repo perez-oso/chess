@@ -135,6 +135,7 @@ public class ChessBoard {
                 }
             }
 
+        System.out.println("DEBUG: KING @ " + kingPosition);
         return kingPosition;
     }
 
@@ -147,6 +148,7 @@ public class ChessBoard {
                 teamMoves.addAll(pieceMoves);
             }
 
+        System.out.println("DEBUG: opposing moves " + teamMoves.toString());
         return teamMoves;
     }
 }
