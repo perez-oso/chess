@@ -151,4 +151,21 @@ public class ChessBoard {
         System.out.println("DEBUG: opposing moves " + teamMoves.toString());
         return teamMoves;
     }
+
+    @Override
+    public ChessBoard Copy(ChessBoard boardToCopy, ChessMove move) {
+        ChessBoard newBoard = new ChessBoard();
+        ChessPiece currentPiece;
+
+        for (var entry : this.activePieces.keySet()) {
+            currentPiece = this.activePieces.get(entry);
+            if (Objects.equals(entry, move.getStartPosition())) {
+                newBoard.addPiece(move.getEndPosition(), currentPiece);
+            } else if (!Objects.equals(entry, move.getStartPosition())) {
+                newBoard.addPiece(entry, currentPiece);
+            }
+        }
+
+        return newBoard;
+    }
 }

@@ -14,7 +14,9 @@ public class ChessGame {
     private TeamColor currentTeamColor;
 
     public ChessGame() {
-
+        this.board = new ChessBoard();
+        this.board.resetBoard();
+        this.currentTeamColor = TeamColor.WHITE;
     }
 
     /**
@@ -61,12 +63,14 @@ public class ChessGame {
      * @param move chess move to perform
      * @throws InvalidMoveException if move is invalid
      */
+    //must account for moves that would result in check
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
-//        ChessPiece currentPiece = this.board.getPiece(move.getStartPosition());
-//        Collection<ChessMove> validMoves = currentPiece.pieceMoves(this.board, move.getStartPosition());
-//        if (!validMoves.contains(move.getEndPosition())) {
-//
+//        throw new RuntimeException("Not implemented");
+
+        ChessBoard newBoard = this.board.cop;
+        newBoard.addPiece(move.getEndPosition(), this.board.getPiece(move.getStartPosition()));
+        for (var entry : this.board.)
+
     }
 
     /**
@@ -105,6 +109,8 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
 //        throw new RuntimeException("Not implemented");
+        // must account for future moves. king can capture pieces and thereby open moves up to other pieces, but still be in checkmate
+        // will require move function to work
         TeamColor opposingTeamColor = TeamColor.WHITE;
 
         if (teamColor == TeamColor.WHITE) {
