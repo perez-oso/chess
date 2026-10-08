@@ -93,14 +93,18 @@ public class ChessGame {
 
         ChessPiece movedPiece = this.getBoard().getPiece(move.getStartPosition());
 
-        if (movedPiece == null) {
-            throw new InvalidMoveException("There is no piece at that location.");
-        }
+        if (movedPiece == null) throw new InvalidMoveException("There is no piece at that location.");
 
         Collection<ChessMove> validMoves = this.pareInvalidMoves(movedPiece.pieceMoves(this.getBoard(), move.getStartPosition()), movedPiece.getTeamColor());
 
         if (!validMoves.contains(move)) {
             throw new InvalidMoveException("This move is not valid.");
+        }
+
+        if (this.currentTeamColor == TeamColor.WHITE) {
+            this.setTeamTurn(TeamColor.BLACK);
+        } else {
+            this.setTeamTurn(TeamColor.WHITE);
         }
     }
 
