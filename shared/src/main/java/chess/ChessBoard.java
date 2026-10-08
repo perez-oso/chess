@@ -239,7 +239,7 @@ public class ChessBoard {
             currentPiece = this.activePieces.get(entry);
             if (Objects.equals(entry, move.getStartPosition())) {
                 newBoard.addPiece(move.getEndPosition(), currentPiece);
-            } else if (!Objects.equals(entry, move.getStartPosition())) {
+            } else if (!Objects.equals(entry, move.getEndPosition())) {
                 newBoard.addPiece(entry, currentPiece);
             }
         }

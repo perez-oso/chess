@@ -2,6 +2,8 @@ package chess;
 
 import java.util.*;
 
+import static chess.ChessGame.TeamColor.WHITE;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -62,7 +64,7 @@ public class ChessPiece {
 
     void promotePawn(PieceType promoteTo, ChessPosition pawnPosition) {
         if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && pawnPosition.getRow() == 1) ||
-                (this.getTeamColor() == ChessGame.TeamColor.WHITE && pawnPosition.getRow() == 8)) {
+                (this.getTeamColor() == WHITE && pawnPosition.getRow() == 8)) {
             this.pieceType = promoteTo;
         }
     }
@@ -85,7 +87,7 @@ public class ChessPiece {
                 int inc = -1;
                 Collection<ChessMove> pawnMovesBeforePromotion = new ArrayList<ChessMove>() {};
 
-                if (this.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                if (this.getTeamColor() == WHITE) {
                     inc = 1;
                 }
 
@@ -107,7 +109,7 @@ public class ChessPiece {
                 } // if second diagonal is empty or capturable
 
                 if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 2) ||
-                        (this.getTeamColor() == ChessGame.TeamColor.WHITE && myPosition.getRow() == 7)) { // if promotion is possible
+                        (this.getTeamColor() == WHITE && myPosition.getRow() == 7)) { // if promotion is possible
                     for (ChessMove move : pawnMovesBeforePromotion) {
                         possibleMoves.add(new ChessMove(move.start, move.end, PieceType.QUEEN));
                         possibleMoves.add(new ChessMove(move.start, move.end, PieceType.BISHOP));
@@ -119,7 +121,7 @@ public class ChessPiece {
                 }
 
                 if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7) ||
-                        (this.getTeamColor() == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2)) { // if 2-square advance is permissible
+                        (this.getTeamColor() == WHITE && myPosition.getRow() == 2)) { // if 2-square advance is permissible
                     testPosition = new ChessPosition(myPosition.getRow() + 2 * inc, myPosition.getColumn());
                     ChessPosition oneAhead = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn());
 
