@@ -100,17 +100,13 @@ public class ChessGame {
 
         if (!validMoves.contains(move)) throw new InvalidMoveException("This move is not valid.");
 
-        if ((movedPiece.getTeamColor() == TeamColor.BLACK && move.getEndPosition().getRow() == 1) ||
-                (movedPiece.getTeamColor() == TeamColor.WHITE && move.getEndPosition().getRow() == 8)) {
-            if (move.getPromotionPiece() != null) {
-                movedPiece.promotePawn(move.getPromotionPiece(), move.getEndPosition());
-            }
-        }
         System.out.println("DEBUG 104: \n" + this.getBoard().toString());
         this.setBoard(this.getBoard().moveCopy(move));
-        System.out.println("DEBUG 106: \n" + this.getBoard().toString());
 
-
+        if (move.getPromotionPiece() != null) {
+            movedPiece.promotePawn(move.getPromotionPiece(), move.getEndPosition());
+        }
+        System.out.println("DEBUG 109: \n" + this.getBoard().toString());
 
         if (this.currentTeamColor == TeamColor.WHITE) {
             this.setTeamTurn(TeamColor.BLACK);
