@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -53,8 +55,30 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return this.board.getPiece(startPosition).pieceMoves(this.board, startPosition);
+        Collection<ChessMove> possibleMoves = this.board.getPiece(startPosition).pieceMoves(this.board, startPosition);
+        return pareInvalidMoves(possibleMoves, this.getBoard().getPiece(startPosition).getTeamColor());
 //        throw new RuntimeException("Not implemented");
+    }
+
+    public Collection<ChessMove> validTeamMoves(TeamColor teamColor) {
+        Collection<ChessMove> possibleMoves = this.board.getTeamMoves(teamColor);
+        return pareInvalidMoves(possibleMoves, teamColor);
+    }
+
+    public Collection<ChessMove> pareInvalidMoves(Collection<ChessMove> possibleMoves, TeamColor  teamColor) {
+        Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
+        ChessBoard oldBoard = this.getBoard().Copy();
+
+        for (var move : possibleMoves) {
+            this.setBoard(this.getBoard().moveCopy(move));
+            if (!this.isInCheck(teamColor)) {
+                validMoves.add(move);
+            }
+
+            this.setBoard(oldBoard);
+        }
+
+        return validMoves;
     }
 
     /**
@@ -66,10 +90,18 @@ public class ChessGame {
     //must account for moves that would result in check
     public void makeMove(ChessMove move) throws InvalidMoveException {
 //        throw new RuntimeException("Not implemented");
-        ChessBoard newBoard = this.getBoard().Copy(move);
 
-        if (this.isInCheck())
+        ChessPiece movedPiece = this.getBoard().getPiece(move.getStartPosition());
 
+        if (movedPiece == null) {
+            throw new InvalidMoveException("There is no piece at that location.");
+        }
+
+        Collection<ChessMove> validMoves = this.pareInvalidMoves(movedPiece.pieceMoves(this.getBoard(), move.getStartPosition()), movedPiece.getTeamColor());
+
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("This move is not valid.");
+        }
     }
 
     /**
@@ -143,7 +175,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
 //        throw new RuntimeException("Not implemented");
-        return (!this.isInCheck(teamColor)) && (this.board.getTeamMoves(teamColor).size() == 0);
+        return (!this.isInCheck(teamColor)) && (this.validTeamMoves(teamColor).isEmpty());
     }
 
 

@@ -152,7 +152,6 @@ public class ChessBoard {
         return teamMoves;
     }
 
-    @Override
     public ChessBoard Copy() {
         ChessBoard newBoard = new ChessBoard();
         ChessPiece currentPiece;
