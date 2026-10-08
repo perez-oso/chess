@@ -38,8 +38,8 @@ public class ChessBoard {
     public String toString() {
         StringBuilder boardString = new StringBuilder();
 
-        for (int column = 1; column <= 8; column++) {
-            for (int row = 1; row <= 8; row++) {
+        for (int row = 8; row > 0; row--) {
+            for (int column = 1; column <= 8; column++) {
                 ChessPosition currentPosition = new ChessPosition(row, column);
                 boardString.append("|");
 
@@ -88,12 +88,17 @@ public class ChessBoard {
                             case BISHOP:
                                 boardString.append("B");
                                 break;
+                        }
                     }
+                } else {
+                    boardString.append(" ");
                 }
             }
                 boardString.append("|");
                 boardString.append("\n");
         }
+
+        return boardString.toString();
     }
 
 
@@ -197,7 +202,7 @@ public class ChessBoard {
                 }
             }
 
-        System.out.println("DEBUG: KING @ " + kingPosition);
+//        System.out.println("DEBUG: KING @ " + kingPosition);
         return kingPosition;
     }
 
@@ -210,7 +215,7 @@ public class ChessBoard {
                 teamMoves.addAll(pieceMoves);
             }
 
-        System.out.println("DEBUG: opposing moves " + teamMoves.toString());
+//        System.out.println("DEBUG: opposing moves " + teamMoves.toString());
         return teamMoves;
     }
 

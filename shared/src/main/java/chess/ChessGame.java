@@ -93,13 +93,24 @@ public class ChessGame {
 
         ChessPiece movedPiece = this.getBoard().getPiece(move.getStartPosition());
 
-        if (movedPiece == null) throw new InvalidMoveException("There is no piece at that location.");
+        if (movedPiece == null) throw new InvalidMoveException("There is no piece at this location.");
+        if (movedPiece.getTeamColor() != this.currentTeamColor) throw new InvalidMoveException("It is " + this.currentTeamColor.toString() + "'s turn.");
 
         Collection<ChessMove> validMoves = this.pareInvalidMoves(movedPiece.pieceMoves(this.getBoard(), move.getStartPosition()), movedPiece.getTeamColor());
 
-        if (!validMoves.contains(move)) {
-            throw new InvalidMoveException("This move is not valid.");
+        if (!validMoves.contains(move)) throw new InvalidMoveException("This move is not valid.");
+
+        if ((movedPiece.getTeamColor() == TeamColor.BLACK && move.getEndPosition().getRow() == 1) ||
+                (movedPiece.getTeamColor() == TeamColor.WHITE && move.getEndPosition().getRow() == 8)) {
+            if (move.getPromotionPiece() != null) {
+                movedPiece.promotePawn(move.getPromotionPiece(), move.getEndPosition());
+            }
         }
+        System.out.println("DEBUG 104: \n" + this.getBoard().toString());
+        this.setBoard(this.getBoard().moveCopy(move));
+        System.out.println("DEBUG 106: \n" + this.getBoard().toString());
+
+
 
         if (this.currentTeamColor == TeamColor.WHITE) {
             this.setTeamTurn(TeamColor.BLACK);
@@ -154,7 +165,7 @@ public class ChessGame {
 
         ChessPosition kingPosition = this.board.getKingPosition(teamColor);
         Collection<ChessMove> kingMoves = this.board.getPiece(kingPosition).pieceMoves(this.board, kingPosition);
-        System.out.println("DEBUG 116: kingmoves " + kingMoves.toString());
+//        System.out.println("DEBUG 116: kingmoves " + kingMoves.toString());
         int kingMoveSize = kingMoves.size();
         Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
 
@@ -166,8 +177,8 @@ public class ChessGame {
             }
         }
 
-        System.out.println("DEBUG 128: kingmoves " + kingMoves.toString());
-        return (kingMoveSize > 0) && (kingMoves.size() == 0);
+//        System.out.println("DEBUG 128: kingmoves " + kingMoves.toString());
+        return (kingMoveSize > 0) && (kingMoves.isEmpty());
     }
 
     /**

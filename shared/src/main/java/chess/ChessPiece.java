@@ -60,6 +60,13 @@ public class ChessPiece {
         return this.pieceType;
     }
 
+    void promotePawn(PieceType promoteTo, ChessPosition pawnPosition) {
+        if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && pawnPosition.getRow() == 1) ||
+                (this.getTeamColor() == ChessGame.TeamColor.WHITE && pawnPosition.getRow() == 8)) {
+            this.pieceType = promoteTo;
+        }
+    }
+
     /*
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -166,7 +173,7 @@ public class ChessPiece {
                 BishopTests(board, myPosition, possibleMoves);
         }
 
-        System.out.println("DEBUG: possible moves " + possibleMoves.toString());
+//        System.out.println("DEBUG: possible moves " + possibleMoves.toString());
             return possibleMoves;
     }
 
