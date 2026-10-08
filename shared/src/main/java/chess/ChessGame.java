@@ -100,13 +100,13 @@ public class ChessGame {
 
         if (!validMoves.contains(move)) throw new InvalidMoveException("This move is not valid.");
 
-        System.out.println("DEBUG 104: \n" + this.getBoard().toString());
+//        System.out.println("DEBUG 104: \n" + this.getBoard().toString());
         this.setBoard(this.getBoard().moveCopy(move));
 
         if (move.getPromotionPiece() != null) {
             movedPiece.promotePawn(move.getPromotionPiece(), move.getEndPosition());
         }
-        System.out.println("DEBUG 109: \n" + this.getBoard().toString());
+//        System.out.println("DEBUG 109: \n" + this.getBoard().toString());
 
         if (this.currentTeamColor == TeamColor.WHITE) {
             this.setTeamTurn(TeamColor.BLACK);
@@ -149,32 +149,9 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
+
     public boolean isInCheckmate(TeamColor teamColor) {
-//        throw new RuntimeException("Not implemented");
-        // must account for future moves. king can capture pieces and thereby open moves up to other pieces, but still be in checkmate
-        // will require move function to work
-        TeamColor opposingTeamColor = TeamColor.WHITE;
-
-        if (teamColor == TeamColor.WHITE) {
-            opposingTeamColor = TeamColor.BLACK;
-        }
-
-        ChessPosition kingPosition = this.board.getKingPosition(teamColor);
-        Collection<ChessMove> kingMoves = this.board.getPiece(kingPosition).pieceMoves(this.board, kingPosition);
-//        System.out.println("DEBUG 116: kingmoves " + kingMoves.toString());
-        int kingMoveSize = kingMoves.size();
-        Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
-
-        for (var entry : opposingTeamMoves) {
-            for (var kingEntry : kingMoves) {
-                if (Objects.equals(entry.getEndPosition(), kingEntry.getEndPosition())) {
-                    kingMoves.remove(kingEntry);
-                }
-            }
-        }
-
-//        System.out.println("DEBUG 128: kingmoves " + kingMoves.toString());
-        return (kingMoveSize > 0) && (kingMoves.isEmpty());
+        return (this.isInCheck(teamColor) && this.validTeamMoves(teamColor).isEmpty());
     }
 
     /**
