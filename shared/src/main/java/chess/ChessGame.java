@@ -15,6 +15,20 @@ public class ChessGame {
     private ChessBoard board;
     private TeamColor currentTeamColor;
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(board, chessGame.board) && currentTeamColor == chessGame.currentTeamColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, currentTeamColor);
+    }
+
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();
