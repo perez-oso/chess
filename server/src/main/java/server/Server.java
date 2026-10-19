@@ -8,10 +8,10 @@ import service.*;
 public class Server {
 
     private final Javalin javalin;
-    private final ChessService chessService;
+    private final UserService userService;
 
-    public Server(ChessService chessService) {
-        this.chessService = chessService;
+    public Server(UserService userService) {
+        this.userService = userService;
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
         ;
@@ -31,8 +31,9 @@ public class Server {
 
     private void registerUser(Context ctx) {
         RegisterRequest registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
-        chessService.registerUser(registerRequest);
-//        System.out.println(registerRequest.toString());
-
+        RegisterResult result = userService.registerUser(registerRequest);
+        ctx.status(result.code());
+//        ctx.result(result.toString());
+        System.out.println(registerRequest.toString());
     }
 }
