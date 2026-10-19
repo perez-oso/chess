@@ -22,6 +22,7 @@ public class UserService {
     public RegisterResult registerUser(RegisterRequest registerRequest) {
         try {
             UserData userData = dataAccess.getUser(registerRequest.username());
+
             if (userData != null) {
                 return new RegisterResult(null, null, 403);
             } else {
