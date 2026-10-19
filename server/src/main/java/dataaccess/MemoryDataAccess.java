@@ -9,7 +9,7 @@ public class MemoryDataAccess implements DataAccess {
     final private HashMap<String, UserData> users = new HashMap<>();
     final private HashMap<String, String> userAuthTokens = new HashMap<>();
 
-    public UserData getUser(String username) throws DataAccessException {
+    public UserData getUser(String username) {
         if (users.containsKey(username)) {
             return users.get(username);
         }
@@ -17,11 +17,11 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public void createUser(UserData userData) throws DataAccessException {
+    public void createUser(UserData userData) {
         users.put(userData.username(), userData);
     }
 
-    public void createAuth(AuthData authData) throws DataAccessException {
+    public void createAuth(AuthData authData) {
         userAuthTokens.put(authData.authToken(), authData.username());
     }
 }

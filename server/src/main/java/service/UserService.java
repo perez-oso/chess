@@ -19,20 +19,16 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
 
-    public RegisterResult registerUser(RegisterRequest registerRequest) {
-        try {
+    public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException {
             UserData userData = dataAccess.getUser(registerRequest.username());
 
             if (userData != null) {
-                return new RegisterResult(null, null, 403);
-            } else {
-                String authToken = generateToken();
-                dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
-                dataAccess.createAuth(new AuthData(authToken, registerRequest.username()));
-                return new RegisterResult(registerRequest.username(), authToken, 200);
+                throw new AlreadyTakenException("Error: username already taken");
             }
-        } catch (DataAccessException e) {
-            return new RegisterResult(null, null, 500);
-        }
+
+            String authToken = generateToken();
+            dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+            dataAccess.createAuth(new AuthData(authToken, registerRequest.username()));
+            return new RegisterResult(registerRequest.username(), authToken);
     }
 }

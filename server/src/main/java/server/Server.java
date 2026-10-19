@@ -1,10 +1,13 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AlreadyTakenException;
 import dataaccess.DataAccessException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.*;
+
+import java.util.Map;
 
 public class Server {
 
@@ -15,7 +18,7 @@ public class Server {
         this.userService = userService;
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
-                .exception(DataAccessException.class, this::exceptionHandler)
+                .exception(Exception.class, this::exceptionHandler)
         ;
 
         // Register your endpoints and exception handlers here.
@@ -31,14 +34,21 @@ public class Server {
         javalin.stop();
     }
 
-    private void exceptionHandler(DataAccessException ex, Context ctx) {
+    private void exceptionHandler(Exception ex, Context ctx) {
 
     }
 
     private void registerUser(Context ctx) {
         RegisterRequest registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
-        RegisterResult result = userService.registerUser(registerRequest);
-        ctx.result(new Gson().toJson(result));
+
+        try {
+            RegisterResult result = userService.registerUser(registerRequest);
+            ctx.result(new Gson().toJson(result));
+            ctx.status(200);
+        } catch (AlreadyTakenException ex) {
+            ctx.status(403);
+            ctx.result(ex.toJson());
+        }
 //        System.out.println(registerRequest.toString());
     }
 }
