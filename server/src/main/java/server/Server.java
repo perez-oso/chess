@@ -1,23 +1,20 @@
 package server;
 
-import chess.ChessGame;
+import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
-import com.google.gson.*;
+import service.*;
 
 public class Server {
+
     private final Javalin javalin;
-    private final ChessService service;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
-            .delete("/db", this::clear)
+                .post("/user", this::registerUser)
         ;
 
         // Register your endpoints and exception handlers here.
-        void clear {
-
-        }
 
     }
 
@@ -30,12 +27,9 @@ public class Server {
         javalin.stop();
     }
 
-//    private void exceptionHandler(Exception ex, Context ctx) {
-//
-//    }
-    private void clear(Context ctx) throws Exception {
-        service.deleteGame();
-        ctx.status(204);
+    private void registerUser(Context ctx) {
+        RegisterRequest registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
+//        System.out.println(registerRequest.toString());
+        
     }
 }
-
