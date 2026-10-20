@@ -1,11 +1,10 @@
 package service;
 
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.AlreadyTakenException;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ChessService {
@@ -20,22 +19,29 @@ public class ChessService {
     }
 
     public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException, DataAccessException {
-            UserData userData = dataAccess.getUser(registerRequest.username());
+            UserData userData;
+
+            try {
+                userData = dataAccess.getUser(registerRequest.username());
+            } catch (Exception ex) {
+                throw new DataAccessException("Error: " + ex.getMessage());
+            }
 
             if (userData != null) {
                 throw new AlreadyTakenException("Error: username already taken.");
             }
 
-            String authToken = generateToken();
+            AuthData authData;
 
             try {
+                authData = new AuthData(generateToken(), registerRequest.username());
                 dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
-                dataAccess.createAuth(new AuthData(authToken, registerRequest.username()));
+                dataAccess.createAuth(authData);
             } catch (Exception ex) {
                 throw new DataAccessException("Error: " + ex.getMessage());
             }
 
-            return new RegisterResult(registerRequest.username(), authToken);
+            return new RegisterResult(registerRequest.username(), authData.authToken());
     }
 
     public void clear() throws DataAccessException {
@@ -44,5 +50,32 @@ public class ChessService {
         } catch (Exception ex) {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
+    }
+
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UnauthorizedException, UserNotFoundException {
+        UserData userData;
+
+        try {
+            userData = dataAccess.getUser(loginRequest.username());
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        if (userData == null) {
+            throw new UserNotFoundException("Error: bad request");
+        } else if (!Objects.equals(userData.password(), loginRequest.password())) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+       AuthData authData;
+
+        try {
+            authData = new AuthData(generateToken(), userData.username());
+            dataAccess.createAuth(authData);
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        return new LoginResult(userData.username(), authData.authToken());
     }
 }

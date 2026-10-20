@@ -1,16 +1,15 @@
 package dataaccess;
 
-import chess.ChessGame;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.util.HashMap;
-import chess.ChessGame;
 
 public class MemoryDataAccess implements DataAccess {
     final private HashMap<String, UserData> users = new HashMap<>();
-    final private HashMap<String, String> userAuthTokens = new HashMap<>();
-    final private HashMap<String, ChessGame> activeGames = new HashMap<>();
+    final private HashMap<String, AuthData> activeUsers = new HashMap<>();
+    final private HashMap<String, GameData> activeGames = new HashMap<>();
 
     public UserData getUser(String username) {
         if (users.containsKey(username)) {
@@ -25,12 +24,12 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public void createAuth(AuthData authData) {
-        userAuthTokens.put(authData.authToken(), authData.username());
+        activeUsers.put(authData.authToken(), authData);
     }
 
     public void clear() {
         users.clear();
-        userAuthTokens.clear();
+        activeUsers.clear();
         activeGames.clear();
     }
 }

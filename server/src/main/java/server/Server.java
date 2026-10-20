@@ -1,8 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.AlreadyTakenException;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.*;
@@ -18,6 +17,7 @@ public class Server {
         this.chessService = chessService;
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
+                .post("/session", this::login)
                 .exception(Exception.class, this::exceptionHandler)
                 .delete("/db", this::clear)
         ;
@@ -62,8 +62,8 @@ public class Server {
                 return;
             }
 
-            RegisterResult result = chessService.registerUser(registerRequest);
-            ctx.result(new Gson().toJson(result));
+            RegisterResult registerResult = chessService.registerUser(registerRequest);
+            ctx.result(new Gson().toJson(registerResult));
             ctx.status(200);
         } catch (AlreadyTakenException ex) {
             ctx.result(ex.toJson());
@@ -73,5 +73,32 @@ public class Server {
             ctx.status(500);
         }
 //        System.out.println(registerRequest.toString());
+    }
+
+    private void login(Context ctx) {
+        try {
+            LoginRequest loginRequest;
+
+            try {
+                loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
+            LoginResult loginResult = chessService.login(loginRequest);
+            ctx.result(new Gson().toJson(loginResult));
+            ctx.status(200);
+        } catch (DataAccessException ex){
+            ctx.result(ex.toJson());
+            ctx.status(500);
+        } catch (UserNotFoundException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(400);
+;        } catch (UnauthorizedException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(401);
+        }
     }
 }

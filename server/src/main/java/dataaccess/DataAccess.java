@@ -11,5 +11,7 @@ public interface DataAccess {
 
     void createAuth(AuthData authData);
 
+//    void loginUser(UserData userData);
+
     void clear();
 }
