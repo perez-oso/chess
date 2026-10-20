@@ -10,4 +10,6 @@ public interface DataAccess {
     void createUser(UserData userData);
 
     void createAuth(AuthData authData);
+
+    void clear();
 }

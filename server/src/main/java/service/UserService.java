@@ -38,4 +38,12 @@ public class UserService {
 
             return new RegisterResult(registerRequest.username(), authToken);
     }
+
+    public void clear() throws DataAccessException {
+        try {
+            dataAccess.clear();
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+    }
 }

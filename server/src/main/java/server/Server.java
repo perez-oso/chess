@@ -21,6 +21,7 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
                 .exception(Exception.class, this::exceptionHandler)
+                .delete("/db", this::clear)
         ;
 
         // Register your endpoints and exception handlers here.
@@ -38,6 +39,17 @@ public class Server {
 
     private void exceptionHandler(Exception ex, Context ctx) {
 
+    }
+
+    private void clear(Context ctx) {
+        try {
+            userService.clear();
+            ctx.result();
+            ctx.status(200);
+        } catch (DataAccessException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(500);
+        }
     }
 
     private void registerUser(Context ctx) {

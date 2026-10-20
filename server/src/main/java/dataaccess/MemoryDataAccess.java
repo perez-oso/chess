@@ -28,7 +28,7 @@ public class MemoryDataAccess implements DataAccess {
         userAuthTokens.put(authData.authToken(), authData.username());
     }
 
-    public void clearDatabase() {
+    public void clear() {
         users.clear();
         userAuthTokens.clear();
         activeGames.clear();
