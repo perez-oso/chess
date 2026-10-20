@@ -2,22 +2,20 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.AlreadyTakenException;
-import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.*;
 
-import javax.xml.crypto.Data;
 import java.util.Map;
 
 public class Server {
 
     private final Javalin javalin;
-    private final UserService userService;
+    private final ChessService chessService;
 
-    public Server(UserService userService) {
-        this.userService = userService;
+    public Server(ChessService chessService) {
+        this.chessService = chessService;
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
                 .exception(Exception.class, this::exceptionHandler)
@@ -43,7 +41,7 @@ public class Server {
 
     private void clear(Context ctx) {
         try {
-            userService.clear();
+            chessService.clear();
             ctx.result();
             ctx.status(200);
         } catch (DataAccessException ex) {
@@ -64,7 +62,7 @@ public class Server {
                 return;
             }
 
-            RegisterResult result = userService.registerUser(registerRequest);
+            RegisterResult result = chessService.registerUser(registerRequest);
             ctx.result(new Gson().toJson(result));
             ctx.status(200);
         } catch (AlreadyTakenException ex) {

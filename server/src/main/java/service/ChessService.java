@@ -6,13 +6,12 @@ import dataaccess.AlreadyTakenException;
 import model.AuthData;
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.util.UUID;
 
-public class UserService {
+public class ChessService {
     DataAccess dataAccess;
 
-    public UserService(DataAccess dataAccess) {
+    public ChessService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 

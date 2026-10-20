@@ -1,7 +1,5 @@
 package server;
 
-import chess.*;
-import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import service.*;
 
@@ -15,7 +13,7 @@ import service.*;
 public class ServerMain {
     public static void main(String[] args) {
         var port = 8080;
-        Server server = new Server(new UserService(new MemoryDataAccess()));
+        Server server = new Server(new ChessService(new MemoryDataAccess()));
         server.run(port);
 
         System.out.println("♕ 240 Chess Server running on port " + port);
