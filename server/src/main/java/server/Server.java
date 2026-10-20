@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.AlreadyTakenException;
+import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -46,8 +47,8 @@ public class Server {
             ctx.result(new Gson().toJson(result));
             ctx.status(200);
         } catch (AlreadyTakenException ex) {
-            ctx.status(403);
             ctx.result(ex.toJson());
+            ctx.status(403);
         }
 //        System.out.println(registerRequest.toString());
     }
