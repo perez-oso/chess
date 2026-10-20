@@ -6,6 +6,7 @@ import dataaccess.AlreadyTakenException;
 import model.AuthData;
 import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public class UserService {
@@ -19,7 +20,7 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
 
-    public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException {
+    public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException, DataAccessException {
             UserData userData = dataAccess.getUser(registerRequest.username());
 
             if (userData != null) {
@@ -27,8 +28,14 @@ public class UserService {
             }
 
             String authToken = generateToken();
-            dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
-            dataAccess.createAuth(new AuthData(authToken, registerRequest.username()));
+
+            try {
+                dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+                dataAccess.createAuth(new AuthData(authToken, registerRequest.username()));
+            } catch (Exception ex) {
+                throw new DataAccessException("Error: " + ex.getMessage());
+            }
+
             return new RegisterResult(registerRequest.username(), authToken);
     }
 }

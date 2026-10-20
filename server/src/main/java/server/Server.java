@@ -8,6 +8,7 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import service.*;
 
+import javax.xml.crypto.Data;
 import java.util.Map;
 
 public class Server {
@@ -57,6 +58,9 @@ public class Server {
         } catch (AlreadyTakenException ex) {
             ctx.result(ex.toJson());
             ctx.status(403);
+        } catch (DataAccessException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(500);
         }
 //        System.out.println(registerRequest.toString());
     }

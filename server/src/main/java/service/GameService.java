@@ -6,4 +6,6 @@ import dataaccess.DataAccess;
 
 public class GameService {
     DataAccess dataAccess;
+
+//    private HashMap<String, ChessGame> games = new HashMap<>
 }
