@@ -40,9 +40,17 @@ public class Server {
     }
 
     private void registerUser(Context ctx) {
-        RegisterRequest registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
-
         try {
+            RegisterRequest registerRequest;
+
+            try {
+                registerRequest = new Gson().fromJson(ctx.body(), RegisterRequest.class);
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
             RegisterResult result = userService.registerUser(registerRequest);
             ctx.result(new Gson().toJson(result));
             ctx.status(200);

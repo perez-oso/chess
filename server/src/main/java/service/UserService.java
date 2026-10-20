@@ -23,7 +23,7 @@ public class UserService {
             UserData userData = dataAccess.getUser(registerRequest.username());
 
             if (userData != null) {
-                throw new AlreadyTakenException("Error: username already taken");
+                throw new AlreadyTakenException("Error: username already taken.");
             }
 
             String authToken = generateToken();
