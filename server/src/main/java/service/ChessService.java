@@ -52,7 +52,7 @@ public class ChessService {
         }
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UnauthorizedException, UserNotFoundException {
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UserNotFoundException {
         UserData userData;
 
         try {
@@ -61,10 +61,8 @@ public class ChessService {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
 
-        if (userData == null) {
+        if (userData == null || !Objects.equals(userData.password(), loginRequest.password())) {
             throw new UserNotFoundException("Error: bad request");
-        } else if (!Objects.equals(userData.password(), loginRequest.password())) {
-            throw new UnauthorizedException("Error: unauthorized");
         }
 
        AuthData authData;

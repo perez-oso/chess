@@ -1,8 +1,5 @@
 package service;
-import dataaccess.AlreadyTakenException;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
+import dataaccess.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +27,7 @@ public class ChessServiceTests {
     }
 
     @Test
-    void ClearTest() {
+    void Clear() {
         ChessService chessService = new ChessService(new MemoryDataAccess());
 
         try{
@@ -39,5 +36,39 @@ public class ChessServiceTests {
             chessService.clear();
         } catch(Exception ex) {return;}
         //add code to use other data and check if clear worked
+    }
+
+    @Test
+    void loginRegisteredUser() {
+        ChessService chessService = new ChessService((new MemoryDataAccess()));
+
+        try {
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
+            chessService.login(new LoginRequest("Alice", "pa55w0rd"));
+        } catch (Exception ex) {
+            return;
+        }
+    }
+
+    @Test
+    void loginUnregisteredUser() {
+        ChessService chessService = new ChessService((new MemoryDataAccess()));
+
+        try {
+            assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Bjork", "animalfries42069"));});
+        } catch (Exception ex) {
+            return;
+        }
+    }
+
+    @Test
+    void loginInvalidPassword() {
+        ChessService chessService = new ChessService((new MemoryDataAccess()));
+
+        try {
+            assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
+        } catch (Exception ex) {
+            return;
+        }
     }
 }

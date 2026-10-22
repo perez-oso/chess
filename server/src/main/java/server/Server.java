@@ -96,9 +96,6 @@ public class Server {
         } catch (UserNotFoundException ex) {
             ctx.result(ex.toJson());
             ctx.status(400);
-;        } catch (UnauthorizedException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(401);
         }
     }
 }
