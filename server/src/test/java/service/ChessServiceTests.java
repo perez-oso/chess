@@ -2,8 +2,7 @@ package service;
 import dataaccess.*;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessServiceTests {
     @Test
@@ -12,7 +11,7 @@ public class ChessServiceTests {
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
         try {
             assertEquals("Alice", chessService.registerUser(testRegisterRequest).username());
-        } catch(Exception ex) {return;}
+        } catch(Exception ex) {fail();}
     }
 
     @Test
@@ -21,7 +20,7 @@ public class ChessServiceTests {
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
         try {
             chessService.registerUser(testRegisterRequest);
-        } catch(Exception ex) {return;}
+        } catch(Exception ex) {fail();}
 
         assertThrows(AlreadyTakenException.class, () -> {chessService.registerUser(testRegisterRequest);});
     }
@@ -46,7 +45,7 @@ public class ChessServiceTests {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             chessService.login(new LoginRequest("Alice", "pa55w0rd"));
         } catch (Exception ex) {
-            return;
+            fail();
         }
     }
 
@@ -58,7 +57,7 @@ public class ChessServiceTests {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Bjork", "animalfries42069"));});
         } catch (Exception ex) {
-            return;
+            fail();
         }
     }
 
@@ -70,7 +69,20 @@ public class ChessServiceTests {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
         } catch (Exception ex) {
-            return;
+            fail();
+        }
+    }
+
+    @Test
+    void logoutValidAuth() {
+        ChessService chessService = new ChessService((new MemoryDataAccess()));
+        String authToken;
+
+        try {
+            authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            chessService.logout(new LogoutRequest(authToken));
+        } catch (Exception ex) {
+            fail();
         }
     }
 }
