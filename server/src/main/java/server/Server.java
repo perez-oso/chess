@@ -103,9 +103,10 @@ public class Server {
     private void logout(Context ctx) {
         try {
             LogoutRequest logoutRequest;
+            System.out.println("DEBUG: " + ctx.header("authorization"));
 
             try {
-                logoutRequest = new Gson().fromJson(ctx.header("authorization:"), LogoutRequest.class);
+                logoutRequest = new LogoutRequest(ctx.header("authorization"));
             } catch (Exception ex) {
                 ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
                 ctx.status(400);
