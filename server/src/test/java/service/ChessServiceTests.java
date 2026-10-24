@@ -85,4 +85,17 @@ public class ChessServiceTests {
             fail();
         }
     }
+
+    @Test
+    void logoutInvalidAuth() {
+        ChessService chessService = new ChessService((new MemoryDataAccess()));
+        String authToken;
+
+        try {
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
+            assertThrows(UnauthorizedException.class, () -> {chessService.logout(new LogoutRequest("loremipsum"));});
+        } catch (Exception ex) {
+           fail();
+        }
+    }
 }
