@@ -76,4 +76,18 @@ public class ChessService {
 
         return new LoginResult(userData.username(), authData.authToken());
     }
+
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException, UnauthorizedException {
+        boolean success;
+
+        try {
+            success = this.dataAccess.deleteAuth(logoutRequest.authToken());
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        if (!success) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+    }
 }

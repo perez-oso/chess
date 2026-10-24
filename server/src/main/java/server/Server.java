@@ -20,6 +20,7 @@ public class Server {
                 .post("/session", this::login)
                 .exception(Exception.class, this::exceptionHandler)
                 .delete("/db", this::clear)
+                .delete("/session", this::logout)
         ;
 
         // Register your endpoints and exception handlers here.
@@ -96,6 +97,30 @@ public class Server {
         } catch (UserNotFoundException ex) {
             ctx.result(ex.toJson());
             ctx.status(400);
+        }
+    }
+
+    private void logout(Context ctx) {
+        try {
+            LogoutRequest logoutRequest;
+
+            try {
+                logoutRequest = new Gson().fromJson(ctx.header("authorization:"), LogoutRequest.class);
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
+            chessService.logout(logoutRequest);
+            ctx.result();
+            ctx.status(200);
+        } catch (DataAccessException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(500);
+        } catch (UnauthorizedException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(401);
         }
     }
 }

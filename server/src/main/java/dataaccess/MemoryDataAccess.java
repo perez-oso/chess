@@ -32,4 +32,13 @@ public class MemoryDataAccess implements DataAccess {
         activeUsers.clear();
         activeGames.clear();
     }
+
+    public boolean deleteAuth(String authToken) {
+        if (activeUsers.containsKey(authToken)) {
+            activeUsers.remove(authToken);
+            return true;
+        }
+
+        return false;
+    }
 }
