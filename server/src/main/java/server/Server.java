@@ -66,6 +66,9 @@ public class Server {
             RegisterResult registerResult = chessService.registerUser(registerRequest);
             ctx.result(new Gson().toJson(registerResult));
             ctx.status(200);
+        } catch (BadRequestException ex) {
+            ctx.result(ex.toJson());
+            ctx.status(400);
         } catch (AlreadyTakenException ex) {
             ctx.result(ex.toJson());
             ctx.status(403);
@@ -94,7 +97,7 @@ public class Server {
         } catch (DataAccessException ex){
             ctx.result(ex.toJson());
             ctx.status(500);
-        } catch (UserNotFoundException ex) {
+        } catch (BadRequestException ex) {
             ctx.result(ex.toJson());
             ctx.status(400);
         }

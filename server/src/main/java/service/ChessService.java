@@ -18,7 +18,7 @@ public class ChessService {
         return UUID.randomUUID().toString();
     }
 
-    public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException, DataAccessException {
+    public RegisterResult registerUser(RegisterRequest registerRequest) throws AlreadyTakenException, DataAccessException, BadRequestException {
             UserData userData;
 
             try {
@@ -29,6 +29,10 @@ public class ChessService {
 
             if (userData != null) {
                 throw new AlreadyTakenException("Error: username already taken.");
+            }
+
+            if (registerRequest.password() == null) {
+                throw new BadRequestException("Error: bad request");
             }
 
             AuthData authData;
@@ -52,7 +56,7 @@ public class ChessService {
         }
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws DataAccessException, UserNotFoundException {
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException, BadRequestException {
         UserData userData;
 
         try {
@@ -62,7 +66,7 @@ public class ChessService {
         }
 
         if (userData == null || !Objects.equals(userData.password(), loginRequest.password())) {
-            throw new UserNotFoundException("Error: bad request");
+            throw new BadRequestException("Error: bad request");
         }
 
        AuthData authData;

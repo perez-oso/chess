@@ -55,7 +55,7 @@ public class ChessServiceTests {
 
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Bjork", "animalfries42069"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bjork", "animalfries42069"));});
         } catch (Exception ex) {
             fail();
         }
@@ -67,7 +67,7 @@ public class ChessServiceTests {
 
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(UserNotFoundException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
         } catch (Exception ex) {
             fail();
         }
