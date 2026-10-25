@@ -1,6 +1,10 @@
 package server;
 
+import chess.ChessGame;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -109,6 +113,19 @@ public class Server {
     }
 
     private void listGames(Context ctx) {
+        ExclusionStrategy strategy = new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipClass(Class<?> klass) {
+                return false;
+            }
+
+            @Override
+            public boolean shouldSkipField(FieldAttributes field) {
+                return field.getName().equals("game");
+            }
+        };
+
+
         try {
             ListGamesRequest listGamesRequest;
 
@@ -121,7 +138,10 @@ public class Server {
             }
 
             ListGamesResult listGamesResult = chessService.listGames(listGamesRequest);
-            ctx.result(new Gson().toJson(listGamesResult)).status(200);
+            Gson gson = new GsonBuilder()
+                .addSerializationExclusionStrategy(strategy)
+                .create();
+            ctx.result(gson.toJson(listGamesResult)).status(200);
         } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
         } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
     }
