@@ -65,11 +65,7 @@ public class ChessService {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
 
-        if (userData == null) {
-            throw new BadRequestException("Error: bad request");
-        }
-
-        if (loginRequest.password() == null) {
+        if (userData == null || loginRequest.password() == null) {
             throw new BadRequestException("Error: bad request");
         }
 

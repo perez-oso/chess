@@ -33,8 +33,8 @@ public class ChessServiceTests {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             chessService.registerUser(new RegisterRequest("Bob", "sdnicjwndij", "bob@mail.com"));
             chessService.clear();
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bob", "sdnicjwndij"));});
         } catch(Exception ex) {return;}
-        //add code to use other data and check if clear worked
     }
 
     @Test
@@ -67,7 +67,8 @@ public class ChessServiceTests {
 
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
+            assertThrows(UnauthorizedException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Ringo", "saynopetobobhope"));});
         } catch (Exception ex) {
             fail();
         }
