@@ -98,4 +98,22 @@ public class ChessService {
             throw new UnauthorizedException("Error: unauthorized");
         }
     }
+
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws DataAccessException, UnauthorizedException {
+        ListGamesResult listGamesResult;
+        UserData userData;
+
+        try {
+            userData = dataAccess.getUserByAuth(listGamesRequest.authToken());
+            listGamesResult = new ListGamesResult(dataAccess.getGamesList());
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        if (userData == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        return listGamesResult;
+    }
 }

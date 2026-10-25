@@ -1,8 +1,7 @@
 package dataaccess;
-import dataaccess.DataAccessException;
 import model.*;
 
-import javax.xml.crypto.Data;
+import java.util.Collection;
 
 public interface DataAccess {
     UserData getUser(String username);
@@ -14,4 +13,8 @@ public interface DataAccess {
     boolean deleteAuth(String authToken);
 
     void clear();
+
+    Collection<GameData> getGamesList();
+
+    UserData getUserByAuth(String authToken);
 }

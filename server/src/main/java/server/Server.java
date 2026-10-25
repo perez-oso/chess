@@ -21,6 +21,7 @@ public class Server {
                 .exception(Exception.class, this::exceptionHandler)
                 .delete("/db", this::clear)
                 .delete("/session", this::logout)
+                .get("/game", this::listGames)
         ;
 
         // Register your endpoints and exception handlers here.
@@ -43,12 +44,8 @@ public class Server {
     private void clear(Context ctx) {
         try {
             chessService.clear();
-            ctx.result();
-            ctx.status(200);
-        } catch (DataAccessException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(500);
-        }
+            ctx.result("").status(200);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);}
     }
 
     private void registerUser(Context ctx) {
@@ -66,16 +63,9 @@ public class Server {
             RegisterResult registerResult = chessService.registerUser(registerRequest);
             ctx.result(new Gson().toJson(registerResult));
             ctx.status(200);
-        } catch (BadRequestException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(400);
-        } catch (AlreadyTakenException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(403);
-        } catch (DataAccessException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(500);
-        }
+        } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);
+        } catch (AlreadyTakenException ex) {ctx.result(ex.toJson()).status(403);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);}
 //        System.out.println(registerRequest.toString());
     }
 
@@ -92,18 +82,10 @@ public class Server {
             }
 
             LoginResult loginResult = chessService.login(loginRequest);
-            ctx.result(new Gson().toJson(loginResult));
-            ctx.status(200);
-        } catch (DataAccessException ex){
-            ctx.result(ex.toJson());
-            ctx.status(500);
-        } catch (BadRequestException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(400);
-        } catch (UnauthorizedException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(401);
-        }
+            ctx.result(new Gson().toJson(loginResult)).status(200);
+        } catch (DataAccessException ex){ctx.result(ex.toJson()).status(500);
+        } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
     }
 
     private void logout(Context ctx) {
@@ -120,14 +102,26 @@ public class Server {
             }
 
             chessService.logout(logoutRequest);
-            ctx.result();
-            ctx.status(200);
-        } catch (DataAccessException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(500);
-        } catch (UnauthorizedException ex) {
-            ctx.result(ex.toJson());
-            ctx.status(401);
-        }
+            ctx.result("").status(200);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
+    }
+
+    private void listGames(Context ctx) {
+        ListGamesRequest listGamesRequest;
+
+        try {
+            try {
+                listGamesRequest = new ListGamesRequest(ctx.header("authorization"));
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
+            ListGamesResult listGamesResult = chessService.listGames(listGamesRequest);
+            ctx.result(new Gson().toJson(listGamesResult)).status(200);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
     }
 }

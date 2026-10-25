@@ -4,6 +4,8 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess {
@@ -33,6 +35,14 @@ public class MemoryDataAccess implements DataAccess {
         activeGames.clear();
     }
 
+    public UserData getUserByAuth(String authToken) {
+        if (activeUsers.containsKey(authToken)) {
+            return this.getUser(activeUsers.get(authToken).username());
+        }
+
+        return null;
+    }
+
     public boolean deleteAuth(String authToken) {
         if (activeUsers.containsKey(authToken)) {
             activeUsers.remove(authToken);
@@ -40,5 +50,9 @@ public class MemoryDataAccess implements DataAccess {
         }
 
         return false;
+    }
+
+    public Collection<GameData> getGamesList() {
+        return new ArrayList<>(activeGames.values());
     }
 }
