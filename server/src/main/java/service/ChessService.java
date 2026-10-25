@@ -60,17 +60,17 @@ public class ChessService {
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException, BadRequestException, UnauthorizedException {
         UserData userData;
 
+        if (loginRequest.password() == null || loginRequest.username() == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
         try {
             userData = dataAccess.getUser(loginRequest.username());
         } catch (Exception ex) {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
 
-        if (userData == null || loginRequest.password() == null) {
-            throw new BadRequestException("Error: bad request");
-        }
-
-        if (!Objects.equals(userData.password(), loginRequest.password())) {
+        if (userData == null || !userData.password().equals(loginRequest.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
 

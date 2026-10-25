@@ -88,8 +88,8 @@ public class Server {
 
             LoginResult loginResult = chessService.login(loginRequest);
             ctx.result(new Gson().toJson(loginResult)).status(200);
-        } catch (DataAccessException ex){ctx.result(ex.toJson()).status(500);
         } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);
+        } catch (DataAccessException ex){ctx.result(ex.toJson()).status(500);
         } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
     }
 
