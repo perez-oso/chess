@@ -125,7 +125,6 @@ public class Server {
             }
         };
 
-
         try {
             ListGamesRequest listGamesRequest;
 
@@ -163,6 +162,7 @@ public class Server {
             ctx.result(new Gson().toJson(chessService.createGame(authToken, createGameRequest)));
             ctx.status(200);
         } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
-        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);
+        } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);}
     }
 }

@@ -60,7 +60,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public int createGame(String gameName) {
-        int gameID = this.gameID++;
+        int gameID = ++this.gameID;
         GameData gameData = new GameData(gameID, null, null, gameName, new ChessGame());
         this.activeGames.put(gameID, gameData);
         return gameID;
