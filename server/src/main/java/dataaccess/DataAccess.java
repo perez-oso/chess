@@ -17,4 +17,6 @@ public interface DataAccess {
     Collection<GameData> getGamesList();
 
     UserData getUserByAuth(String authToken);
+
+    int createGame(String gameName);
 }

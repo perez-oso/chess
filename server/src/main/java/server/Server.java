@@ -22,6 +22,7 @@ public class Server {
                 .delete("/db", this::clear)
                 .delete("/session", this::logout)
                 .get("/game", this::listGames)
+                .post("/game", this::createGame)
         ;
 
         // Register your endpoints and exception handlers here.
@@ -91,7 +92,7 @@ public class Server {
     private void logout(Context ctx) {
         try {
             LogoutRequest logoutRequest;
-            System.out.println("DEBUG: " + ctx.header("authorization"));
+//            System.out.println("DEBUG: " + ctx.header("authorization"));
 
             try {
                 logoutRequest = new LogoutRequest(ctx.header("authorization"));
@@ -108,9 +109,9 @@ public class Server {
     }
 
     private void listGames(Context ctx) {
-        ListGamesRequest listGamesRequest;
-
         try {
+            ListGamesRequest listGamesRequest;
+
             try {
                 listGamesRequest = new ListGamesRequest(ctx.header("authorization"));
             } catch (Exception ex) {
@@ -121,6 +122,26 @@ public class Server {
 
             ListGamesResult listGamesResult = chessService.listGames(listGamesRequest);
             ctx.result(new Gson().toJson(listGamesResult)).status(200);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
+    }
+
+    private void createGame(Context ctx) {
+        try {
+            CreateGameRequest createGameRequest;
+            String authToken;
+
+            try {
+                authToken = ctx.header("authorization");
+                createGameRequest = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
+            ctx.result(new Gson().toJson(chessService.createGame(authToken, createGameRequest)));
+            ctx.status(200);
         } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
         } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);}
     }

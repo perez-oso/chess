@@ -99,4 +99,9 @@ public class ChessServiceTests {
            fail();
         }
     }
+
+    @Test
+    void listGamesValidAuth() {
+
+    }
 }

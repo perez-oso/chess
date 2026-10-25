@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.util.Objects;
@@ -105,7 +106,6 @@ public class ChessService {
 
         try {
             userData = dataAccess.getUserByAuth(listGamesRequest.authToken());
-            listGamesResult = new ListGamesResult(dataAccess.getGamesList());
         } catch (Exception ex) {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
@@ -114,6 +114,39 @@ public class ChessService {
             throw new UnauthorizedException("Error: unauthorized");
         }
 
+        try {
+            listGamesResult = new ListGamesResult(dataAccess.getGamesList());
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
         return listGamesResult;
+    }
+
+    public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException, UnauthorizedException, BadRequestException {
+        UserData userData;
+        CreateGameResult createGameResult;
+
+        try {
+            userData = dataAccess.getUserByAuth(authToken);
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        if (userData == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        if (createGameRequest.gameName() == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        try {
+            createGameResult = new CreateGameResult(dataAccess.createGame(createGameRequest.gameName()));
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        return createGameResult;
     }
 }
