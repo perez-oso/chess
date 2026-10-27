@@ -27,6 +27,7 @@ public class Server {
                 .delete("/session", this::logout)
                 .get("/game", this::listGames)
                 .post("/game", this::createGame)
+                .put("/game", this::joinGame);
         ;
 
         // Register your endpoints and exception handlers here.
@@ -164,5 +165,29 @@ public class Server {
         } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
         } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);
         } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);}
+    }
+
+    private void joinGame(Context ctx) {
+        try {
+            JoinGameRequest joinGameRequest;
+            String authToken;
+
+            try {
+                authToken = ctx.header("authorization");
+                joinGameRequest = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
+            } catch (Exception ex) {
+                ctx.result(new Gson().toJson(Map.of("message:", "Error: bad request")));
+                ctx.status(400);
+                return;
+            }
+
+            chessService.joinGame(authToken, joinGameRequest);
+
+            ctx.result("");
+            ctx.status(200);
+        } catch (DataAccessException ex) {ctx.result(ex.toJson()).status(500);
+        } catch (UnauthorizedException ex) {ctx.result(ex.toJson()).status(401);
+        } catch (BadRequestException ex) {ctx.result(ex.toJson()).status(400);
+        } catch (AlreadyTakenException ex) {ctx.result(ex.toJson()).status(403);}
     }
 }

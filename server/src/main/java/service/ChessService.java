@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
@@ -148,5 +149,43 @@ public class ChessService {
         }
 
         return createGameResult;
+    }
+
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
+        UserData userData;
+        GameData gameData;
+
+        try {
+            userData = dataAccess.getUserByAuth(authToken);
+            gameData = dataAccess.getGame(joinGameRequest.gameID());
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        if (userData == null) {
+            throw new UnauthorizedException("Error: unauthorized");
+        }
+
+        if (gameData == null) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        if (joinGameRequest.playerColor() != ChessGame.TeamColor.BLACK && joinGameRequest.playerColor() != ChessGame.TeamColor.WHITE) {
+            throw new BadRequestException("Error: bad request");
+        }
+
+        try {
+            if (joinGameRequest.playerColor() == ChessGame.TeamColor.BLACK && gameData.blackUsername() == null) {
+                dataAccess.setBlackPlayer(joinGameRequest.gameID(), userData.username());
+                return;
+            } else if (joinGameRequest.playerColor() == ChessGame.TeamColor.WHITE && gameData.whiteUsername() == null) {
+                dataAccess.setWhitePlayer(joinGameRequest.gameID(), userData.username());
+                return;
+            }
+        } catch (Exception ex) {
+            throw new DataAccessException("Error: " + ex.getMessage());
+        }
+
+        throw new AlreadyTakenException("Error: " + joinGameRequest.playerColor().toString() + " player already taken");
     }
 }

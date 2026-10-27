@@ -18,5 +18,11 @@ public interface DataAccess {
 
     UserData getUserByAuth(String authToken);
 
+    GameData getGame(int gameID);
+
+    void setBlackPlayer(int gameID, String username);
+
+    void setWhitePlayer(int gameID, String username);
+
     int createGame(String gameName);
 }
