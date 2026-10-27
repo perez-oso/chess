@@ -112,6 +112,18 @@ public class ChessServiceTests {
     }
 
     @Test
+    void createGame() {
+        try {
+            String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            CreateGameResult result = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
+            assertNotEquals(null, result);
+            assertNotEquals(0, chessService.listGames(new ListGamesRequest(authToken)).games().size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
     void listGamesValidAuth() {
 
     }
