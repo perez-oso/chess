@@ -124,6 +124,17 @@ public class ChessServiceTests {
     }
 
     @Test
+    void createGameInvalidAuth() {
+        try {
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            assertThrows(UnauthorizedException.class, () -> {CreateGameResult result = chessService.createGame("shibboleth", new CreateGameRequest("kasparov vs deep blue"));});
+
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
     void listGamesValidAuth() {
 
     }
