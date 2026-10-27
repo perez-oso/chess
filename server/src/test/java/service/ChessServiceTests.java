@@ -7,12 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessServiceTests {
-//    ChessService chessService;
 
-//    @BeforeEach
-//    void initialize() {
-//        chessService = new ChessService(new MemoryDataAccess());
-//    }
 
     @Test
     void RegisterOneUser() {
@@ -46,18 +41,6 @@ public class ChessServiceTests {
             assertThrows(BadRequestException.class, () -> {chessService.registerUser(testRegisterRequest);});;
         } catch(Exception ex) {fail();}
     }
-
-//    @Test
-//    void Clear() {
-//        ChessService chessService = new ChessService(new MemoryDataAccess());
-//
-//        try {
-//            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-//            chessService.registerUser(new RegisterRequest("Bob", "sdnicjwndij", "bob@mail.com"));
-//            chessService.clear();
-//            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bob", "sdnicjwndij"));});
-//        } catch(Exception ex) {return;}
-//    }
 
     @Test
     void loginRegisteredUser() {
@@ -155,20 +138,6 @@ public class ChessServiceTests {
             fail();
         }
     }
-
-//    String authToken;
-//    CreateGameResult game;
-//
-//    @BeforeEach
-//    void setupGame() {
-//        ChessService chessService = new ChessService(new MemoryDataAccess());
-//        try {
-//            String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
-//            CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
-//        } catch (Exception ex) {
-//                fail();
-//            }
-//    }
 
     @Test
     void joinGame() {
