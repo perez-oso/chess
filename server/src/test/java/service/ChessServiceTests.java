@@ -1,4 +1,5 @@
 package service;
+import chess.ChessGame;
 import dataaccess.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +127,7 @@ public class ChessServiceTests {
     @Test
     void createGameInvalidAuth() {
         try {
-            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UnauthorizedException.class, () -> {CreateGameResult result = chessService.createGame("shibboleth", new CreateGameRequest("kasparov vs deep blue"));});
 
         } catch (Exception ex) {
@@ -134,8 +135,27 @@ public class ChessServiceTests {
         }
     }
 
-    @Test
-    void listGamesValidAuth() {
+    String authToken;
+    CreateGameResult game;
 
+    @BeforeEach
+    void setupGame() {
+        try {
+            String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
+        } catch (Exception ex) {
+                fail();
+            }
     }
+
+    @Test
+    void joinGame() {
+        try {
+            chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+
 }
