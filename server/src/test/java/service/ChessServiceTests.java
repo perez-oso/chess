@@ -63,21 +63,19 @@ public class ChessServiceTests {
     void loginBadRequest() {
       try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest(null, "animalfries42069"));});
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bjork", null));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest(null, "pa55w0rd"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Alice", null));});
         } catch (Exception ex) {
             fail();
         }
     }
 
     @Test
-    void loginInvalidPassword() {
-        ChessService chessService = new ChessService((new MemoryDataAccess()));
-
+    void loginUnauthorized() {
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(UnauthorizedException.class, () -> {chessService.login(new LoginRequest("Alice", "saynopetobobhope"));});
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Ringo", "saynopetobobhope"));});
+            assertThrows(UnauthorizedException.class, () -> {chessService.login(new LoginRequest("Alice", "animalfries42069"));});
+            assertThrows(UnauthorizedException.class, () -> {chessService.login(new LoginRequest("Bjork", "pa55w0rd"));});
         } catch (Exception ex) {
             fail();
         }
