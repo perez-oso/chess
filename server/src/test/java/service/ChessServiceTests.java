@@ -157,9 +157,20 @@ public class ChessServiceTests {
         }
     }
 
+    @Test
     void joinGameBadAuth() {
         try {
             assertThrows(UnauthorizedException.class, () -> {chessService.joinGame("nonsense", new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
+    @Test
+    void joinGameStealColor() {
+        try {
+            chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));
+            assertThrows(AlreadyTakenException.class, () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
         } catch (Exception ex) {
             fail();
         }
