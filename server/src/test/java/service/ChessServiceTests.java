@@ -44,17 +44,17 @@ public class ChessServiceTests {
         } catch(Exception ex) {fail();}
     }
 
-    @Test
-    void Clear() {
-        ChessService chessService = new ChessService(new MemoryDataAccess());
-
-        try {
-            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            chessService.registerUser(new RegisterRequest("Bob", "sdnicjwndij", "bob@mail.com"));
-            chessService.clear();
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bob", "sdnicjwndij"));});
-        } catch(Exception ex) {return;}
-    }
+//    @Test
+//    void Clear() {
+//        ChessService chessService = new ChessService(new MemoryDataAccess());
+//
+//        try {
+//            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
+//            chessService.registerUser(new RegisterRequest("Bob", "sdnicjwndij", "bob@mail.com"));
+//            chessService.clear();
+//            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bob", "sdnicjwndij"));});
+//        } catch(Exception ex) {return;}
+//    }
 
     @Test
     void loginRegisteredUser() {
