@@ -27,7 +27,6 @@ public class ChessServiceTests {
 
     @Test
     void RegisterDuplicateUser() {
-        ChessService chessService = new ChessService(new MemoryDataAccess());
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
         try {
             chessService.registerUser(testRegisterRequest);
