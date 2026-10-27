@@ -195,7 +195,16 @@ public class ChessServiceTests {
         }
     }
 
-    
+    @Test
+    void listMultipleGames() {
+        try {
+            chessService.createGame(authToken, new CreateGameRequest("brown v board"));
+            chessService.createGame(authToken, new CreateGameRequest("roe v wade"));
+            assertEquals(3, chessService.listGames(new ListGamesRequest(authToken)).games().size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
 
 
 
