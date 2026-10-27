@@ -49,14 +49,14 @@ public class ChessServiceTests {
 
     @Test
     void loginRegisteredUser() {
-        ChessService chessService = new ChessService((new MemoryDataAccess()));
+        LoginResult loginResult;
 
         try {
-            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            chessService.login(new LoginRequest("Alice", "pa55w0rd"));
-        } catch (Exception ex) {
-            fail();
-        }
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
+            loginResult = chessService.login(new LoginRequest("Alice", "pa55w0rd"));
+            assertEquals("Alice", loginResult.username());
+            assertNotEquals(null, loginResult.authToken());
+        } catch(Exception ex) {fail();}
     }
 
     @Test
