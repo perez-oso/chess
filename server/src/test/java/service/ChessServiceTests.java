@@ -1,16 +1,27 @@
 package service;
 import dataaccess.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessServiceTests {
+    ChessService chessService;
+
+    @BeforeEach
+    void initialize() {
+        chessService = new ChessService(new MemoryDataAccess());
+    }
+
     @Test
     void RegisterOneUser() {
-        ChessService chessService = new ChessService(new MemoryDataAccess());
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
+        RegisterResult registerResult;
+
         try {
-            assertEquals("Alice", chessService.registerUser(testRegisterRequest).username());
+            registerResult = chessService.registerUser(testRegisterRequest);
+            assertEquals("Alice", registerResult.username());
+            assertNotEquals(null, registerResult.authToken());
         } catch(Exception ex) {fail();}
     }
 
