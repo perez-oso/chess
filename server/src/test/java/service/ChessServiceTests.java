@@ -48,7 +48,7 @@ public class ChessServiceTests {
     void Clear() {
         ChessService chessService = new ChessService(new MemoryDataAccess());
 
-        try{
+        try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             chessService.registerUser(new RegisterRequest("Bob", "sdnicjwndij", "bob@mail.com"));
             chessService.clear();
@@ -206,6 +206,16 @@ public class ChessServiceTests {
         }
     }
 
-
-
+    @Test
+    void clear() {
+        try {
+            chessService.clear();
+            assertThrows(BadRequestException.class, () -> {
+                chessService.login(new LoginRequest("Alice", "pa55w0rd"));
+            });
+            assertEquals(0, chessService.listGames(new ListGamesRequest(authToken)).games().size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
 }
