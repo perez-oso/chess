@@ -157,5 +157,13 @@ public class ChessServiceTests {
         }
     }
 
+    void joinGameBadAuth() {
+        try {
+            assertThrows(UnauthorizedException.class, () -> {chessService.joinGame("nonsense", new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
 
 }
