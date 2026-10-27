@@ -60,12 +60,11 @@ public class ChessServiceTests {
     }
 
     @Test
-    void loginUnregisteredUser() {
-        ChessService chessService = new ChessService((new MemoryDataAccess()));
-
-        try {
+    void loginBadRequest() {
+      try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bjork", "animalfries42069"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest(null, "animalfries42069"));});
+            assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest("Bjork", null));});
         } catch (Exception ex) {
             fail();
         }
