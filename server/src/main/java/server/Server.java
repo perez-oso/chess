@@ -17,8 +17,8 @@ public class Server {
     private final Javalin javalin;
     private final ChessService chessService;
 
-    public Server(ChessService chessService) {
-        this.chessService = chessService;
+    public Server() {
+        this.chessService = new ChessService(new MemoryDataAccess());
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registerUser)
                 .post("/session", this::login)
