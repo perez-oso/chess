@@ -176,5 +176,14 @@ public class ChessServiceTests {
         }
     }
 
+    @Test
+    void joinGameBadID() {
+        try {
+            assertThrows(UnauthorizedException.class, () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, -3));});
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
 
 }
