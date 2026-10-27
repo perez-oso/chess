@@ -36,6 +36,14 @@ public class ChessServiceTests {
     }
 
     @Test
+    void RegisterBadRequest() {
+        RegisterRequest testRegisterRequest = new RegisterRequest("Alice", null, "alicedoe@gmail.com");
+        try {
+            assertThrows(BadRequestException.class, () -> {chessService.registerUser(testRegisterRequest);});;
+        } catch(Exception ex) {fail();}
+    }
+
+    @Test
     void Clear() {
         ChessService chessService = new ChessService(new MemoryDataAccess());
 
@@ -52,7 +60,7 @@ public class ChessServiceTests {
         LoginResult loginResult;
 
         try {
-            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
+            chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             loginResult = chessService.login(new LoginRequest("Alice", "pa55w0rd"));
             assertEquals("Alice", loginResult.username());
             assertNotEquals(null, loginResult.authToken());
@@ -83,7 +91,6 @@ public class ChessServiceTests {
 
     @Test
     void logoutValidAuth() {
-        ChessService chessService = new ChessService((new MemoryDataAccess()));
         String authToken;
 
         try {
@@ -96,10 +103,7 @@ public class ChessServiceTests {
 
     @Test
     void logoutInvalidAuth() {
-        ChessService chessService = new ChessService((new MemoryDataAccess()));
-        String authToken;
-
-        try {
+       try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UnauthorizedException.class, () -> {chessService.logout(new LogoutRequest("loremipsum"));});
         } catch (Exception ex) {
