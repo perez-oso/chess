@@ -135,6 +135,16 @@ public class ChessServiceTests {
         }
     }
 
+    @Test
+    void listNoGames() {
+        try {
+            String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
+            assertEquals(0, chessService.listGames(new ListGamesRequest(authToken)).games().size());
+        } catch (Exception ex) {
+            fail();
+        }
+    }
+
     String authToken;
     CreateGameResult game;
 
@@ -184,6 +194,9 @@ public class ChessServiceTests {
             fail();
         }
     }
+
+    
+
 
 
 }
