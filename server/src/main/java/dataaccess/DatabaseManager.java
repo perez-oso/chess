@@ -4,10 +4,10 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DatabaseManager {
-    private static String databaseName = "chess";
-    private static String dbUsername = "brownsauce";
-    private static String dbPassword = "ohsqlmysqlA1!";
-    private static String connectionUrl = "jdbc:mysql://localhost:3306/chess";
+    private static String databaseName;
+    private static String dbUsername;
+    private static String dbPassword;
+    private static String connectionUrl;
 
     /*
      * Load the database information for the db.properties file.
@@ -24,6 +24,38 @@ public class DatabaseManager {
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
+
+            conn.setCatalog("chess");
+
+            var createUsersTable = """
+                    CREATE TABLE IF NOT EXISTS users (
+                        username VARCHAR(255) NOT NULL,
+                        userData LONGTEXT NOT NULL,
+                    )""";
+
+            try (var createTableStatement = conn.prepareStatement(createUsersTable)) {
+                createTableStatement.executeUpdate();
+            }
+
+            var createActiveUsersTable = """
+                    CREATE TABLE IF NOT EXISTS activeUsers (
+                        username VARCHAR(255) NOT NULL,
+                        authData LONGTEXT NOT NULL,
+                    )""";
+
+            try (var createTableStatement = conn.prepareStatement(createActiveUsersTable)) {
+                createTableStatement.executeUpdate();
+            }
+
+            var createActiveGamesTable = """
+                    CREATE TABLE IF NOT EXISTS activeGames (
+                        gameID INT NOT NULL AUTO_INCREMENT,
+                        userData LONGTEXT NOT NULL,
+                    )""";
+
+            try (var createTableStatement = conn.prepareStatement(createActiveGamesTable)) {
+                createTableStatement.executeUpdate();
+            }
         } catch (SQLException ex) {
             throw new DataAccessException("failed to create database", ex);
         }
