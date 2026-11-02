@@ -1,6 +1,7 @@
 package dataaccess;
 
 import com.google.gson.Gson;
+import kotlin.TuplesKt;
 import model.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -30,7 +31,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-//            throw new DataAccessException("unable to read data: " + ex.getMessage());
+//          System.out.println("uh oh 4");
         }
 
         return null;
@@ -54,7 +55,7 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void createUser(UserData userData) {
-        var statement = "INSERT INTO users (username, json) VALUES(?, ?)";
+        var statement = "INSERT INTO users (username, userData) VALUES(?, ?)";
         String username = userData.username();
         String json = new Gson().toJson(userData);
 
@@ -70,12 +71,12 @@ public class MySQLDataAccess {//implements DataAccess {
                 throw new RuntimeException(ex);
             }
         } catch (Exception ex) {
-            System.out.println("uh oh");
+            System.out.println(ex.toString());
         }
     }
 
     public void createAuth(AuthData authData) {
-        var statement = "INSERT INTO users (username, json) VALUES(?, ?)";
+        var statement = "INSERT INTO activeUsers (authToken, authData) VALUES(?, ?)";
         String authToken = authData.authToken();
         String json = new Gson().toJson(authToken);
 
@@ -91,7 +92,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 throw new RuntimeException(ex);
             }
         } catch (Exception ex) {
-            System.out.println("uh oh");
+            System.out.println(toString());
         }
     }
 
