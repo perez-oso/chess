@@ -22,6 +22,7 @@ public class MySQLDataAccess {//implements DataAccess {
         }
 }
 
+
     public UserData getUser(String username) {
       try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT userData FROM users WHERE username=?";
@@ -121,12 +122,35 @@ public class MySQLDataAccess {//implements DataAccess {
         return java.util.List.of();
     }
 
-    public UserData getUserByAuth(String authToken) {
+    public GameData getGame(int gameID) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameData FROM games WHERE gameID=?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setInt(1, gameID);
+                try (ResultSet rs = preparedStatement.executeQuery()){
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+//          System.out.println("uh oh 4");
+        }
+
         return null;
     }
 
-    public GameData getGame(int gameID) {
-        return null;
+    public GameData readGame(ResultSet rs) {
+        GameData gameData = null;
+
+        try {
+            var json = rs.getString("gameData");
+            gameData = new Gson().fromJson(json, GameData.class);
+        } catch (SQLException ex) {
+
+        }
+
+        return gameData;
     }
 
     public void setBlackPlayer(int gameID, String username) {}
