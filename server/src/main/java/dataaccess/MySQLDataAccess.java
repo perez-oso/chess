@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import kotlin.TuplesKt;
 import model.*;
@@ -52,8 +53,47 @@ public class MySQLDataAccess {//implements DataAccess {
         return userData;
     }
 
+    public AuthData getAuth(String authToken) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authData FROM auths WHERE authToken=?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                try (ResultSet rs = preparedStatement.executeQuery()){
+                    if (rs.next()) {
+                        return readAuth(rs);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+//          System.out.println("uh oh 4");
+        }
+
+        return null;
+    }
+
+    public AuthData readAuth(ResultSet rs) {
+        AuthData authData = null;
+
+        try {
+            var json = rs.getString("authData");
+            authData = new Gson().fromJson(json, AuthData.class);
+        } catch (SQLException ex) {
+
+        }
+
+        return authData;
+    }
+
     public int createGame(String gameName) {
-        return 0;
+        var statement = "INSERT INTO games (gameID, gameData) VALUES(?, ?)";
+        GameData gameData = null;
+        int gameID = executeUpdate(statement, 0, gameData);
+
+        gameData = new GameData(gameID, null, null, gameName, new ChessGame());
+        statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
+        executeUpdate(statement, gameData, gameID);
+
+        return gameID;
     }
 
     public void createUser(UserData userData) {
@@ -76,7 +116,6 @@ public class MySQLDataAccess {//implements DataAccess {
         executeUpdate("TRUNCATE auths");
         executeUpdate("TRUNCATE games");
     }
-
 
     public Collection<GameData> getGamesList() {
         return java.util.List.of();
