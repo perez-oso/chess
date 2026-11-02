@@ -58,90 +58,23 @@ public class MySQLDataAccess {//implements DataAccess {
 
     public void createUser(UserData userData) {
         var statement = "INSERT INTO users (username, userData) VALUES(?, ?)";
-        String username = userData.username();
-        String json = new Gson().toJson(userData);
-
-        try {
-            var conn = DatabaseManager.getConnection();
-
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, json);
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
+        executeUpdate(statement, userData.username(), userData);
     }
 
     public void createAuth(AuthData authData) {
         var statement = "INSERT INTO auths (authToken, authData) VALUES(?, ?)";
-        String authToken = authData.authToken();
-        String json = new Gson().toJson(authToken);
-
-        try {
-            var conn = DatabaseManager.getConnection();
-
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, authToken);
-                preparedStatement.setString(2, json);
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        } catch (Exception ex) {
-            System.out.println(toString());
-        }
+        executeUpdate(statement, authData.authToken(), authData);
     }
 
     public void deleteAuth(String authToken) {
         var statement = "DELETE FROM auths WHERE authToken=?";
-
-        try {
-            var conn = DatabaseManager.getConnection();
-
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, authToken);
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
+        executeUpdate(statement, authToken);
     }
 
     public void clear() {
         executeUpdate("TRUNCATE users");
         executeUpdate("TRUNCATE auths");
         executeUpdate("TRUNCATE games");
-//        try {
-//            var conn = DatabaseManager.getConnection();
-//
-//            try (var preparedStatement = conn.prepareStatement("TRUNCATE users")) {
-//                preparedStatement.executeUpdate();
-//            } catch (SQLException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//
-//            try (var preparedStatement = conn.prepareStatement("TRUNCATE auths")) {
-//                preparedStatement.executeUpdate();
-//            } catch (SQLException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//
-//            try (var preparedStatement = conn.prepareStatement("TRUNCATE games")) {
-//                preparedStatement.executeUpdate();
-//            } catch (SQLException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        } catch (Exception ex) {
-//            System.out.println(toString());
-//        }
     }
 
 
