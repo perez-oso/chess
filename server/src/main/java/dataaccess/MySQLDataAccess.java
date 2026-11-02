@@ -97,7 +97,20 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public boolean deleteAuth(String authToken) {
-        return false;
+        var statement = "DELETE FROM activeUsers WHERE authToken=?";
+
+        try {
+            var conn = DatabaseManager.getConnection();
+
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
     }
 
     public void clear() {
