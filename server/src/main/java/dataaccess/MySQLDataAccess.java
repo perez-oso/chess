@@ -5,6 +5,8 @@ import kotlin.TuplesKt;
 import model.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.Collection;
@@ -76,7 +78,7 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void createAuth(AuthData authData) {
-        var statement = "INSERT INTO activeUsers (authToken, authData) VALUES(?, ?)";
+        var statement = "INSERT INTO auths (authToken, authData) VALUES(?, ?)";
         String authToken = authData.authToken();
         String json = new Gson().toJson(authToken);
 
@@ -97,7 +99,7 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void deleteAuth(String authToken) {
-        var statement = "DELETE FROM activeUsers WHERE authToken=?";
+        var statement = "DELETE FROM auths WHERE authToken=?";
 
         try {
             var conn = DatabaseManager.getConnection();
@@ -114,30 +116,34 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void clear() {
-        try {
-            var conn = DatabaseManager.getConnection();
-
-            try (var preparedStatement = conn.prepareStatement("TRUNCATE users")) {
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            try (var preparedStatement = conn.prepareStatement("TRUNCATE activeUsers")) {
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            try (var preparedStatement = conn.prepareStatement("TRUNCATE activeGames")) {
-                preparedStatement.executeUpdate();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        } catch (Exception ex) {
-            System.out.println(toString());
-        }
+        executeUpdate("TRUNCATE users");
+        executeUpdate("TRUNCATE auths");
+        executeUpdate("TRUNCATE games");
+//        try {
+//            var conn = DatabaseManager.getConnection();
+//
+//            try (var preparedStatement = conn.prepareStatement("TRUNCATE users")) {
+//                preparedStatement.executeUpdate();
+//            } catch (SQLException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//
+//            try (var preparedStatement = conn.prepareStatement("TRUNCATE auths")) {
+//                preparedStatement.executeUpdate();
+//            } catch (SQLException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//
+//            try (var preparedStatement = conn.prepareStatement("TRUNCATE games")) {
+//                preparedStatement.executeUpdate();
+//            } catch (SQLException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        } catch (Exception ex) {
+//            System.out.println(toString());
+//        }
     }
+
 
     public Collection<GameData> getGamesList() {
         return java.util.List.of();
@@ -155,9 +161,36 @@ public class MySQLDataAccess {//implements DataAccess {
 
     public void setWhitePlayer(int gameID, String username) {}
 
-//    public UserData getUser(String username) {
-//        return null;
-//    }
+    private int executeUpdate(String statement, Object... params) {
+        try {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (int i = 0; i < params.length; i++) {
+                    Object param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param instanceof UserData p) ps.setString(i + 1, new Gson().toJson(p));
+                    else if (param instanceof AuthData p) ps.setString(i + 1, new Gson().toJson(p));
+                    else if (param instanceof GameData p) ps.setString(i + 1, new Gson().toJson(p));
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+                ps.executeUpdate();
+
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
+            }
+        } catch (SQLException e) {
+//            throw new ResponseException(ResponseException.Code.ServerError, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return 0;
+    }
 
     private final String[] createStatements = {
         """
@@ -167,42 +200,17 @@ public class MySQLDataAccess {//implements DataAccess {
         );""",
 
         """
-        CREATE TABLE IF NOT EXISTS activeUsers (
+        CREATE TABLE IF NOT EXISTS auths (
             authToken VARCHAR(255) NOT NULL,
             authData LONGTEXT NOT NULL
         );""",
 
         """
-        CREATE TABLE IF NOT EXISTS activeGames (
+        CREATE TABLE IF NOT EXISTS games (
             gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            userData LONGTEXT NOT NULL
+            gameData LONGTEXT NOT NULL
         );"""
-
-
     };
-//
-//    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-//        try (Connection conn = DatabaseManager.getConnection()) {
-//            try (PreparedStatement ps = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)) {
-//                for (int i = 0; i < params.length; i++) {
-//                    Object param = params[i];
-//                    if (param instanceof String p) ps.setString(i + 1, p);
-//                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-//                    else if (param == null) ps.setNull(i + 1, NULL);
-//                }
-//                ps.executeUpdate();
-//
-//                ResultSet rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-//
-//                return 0;
-//            }
-//        } catch (SQLException ex) {
-//            throw new DataAccessException("unable to update database: " + statement + " " + ex.getMessage());
-//        }
-//    }
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
