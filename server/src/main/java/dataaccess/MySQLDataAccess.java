@@ -96,7 +96,7 @@ public class MySQLDataAccess {//implements DataAccess {
         }
     }
 
-    public boolean deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) {
         var statement = "DELETE FROM activeUsers WHERE authToken=?";
 
         try {

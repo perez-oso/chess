@@ -46,13 +46,8 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
-    public boolean deleteAuth(String authToken) {
-        if (activeUsers.containsKey(authToken)) {
-            activeUsers.remove(authToken);
-            return true;
-        }
-
-        return false;
+    public void deleteAuth(String authToken) {
+        activeUsers.remove(authToken);
     }
 
     public Collection<GameData> getGamesList() {
