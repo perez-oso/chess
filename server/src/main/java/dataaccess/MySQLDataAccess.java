@@ -14,41 +14,86 @@ public class MySQLDataAccess {//implements DataAccess {
         try {
             configureDatabase();
         } catch (DataAccessException ex) {
-            System.out.println("unable to congifure database: " + ex.getMessage());
+            System.out.println("unable to configure database: " + ex.getMessage());
         }
 }
 
-//    public UserData getUser(String username) {
-//      try (Connection conn = DatabaseManager.getConnection()) {
-//            var statement = "SELECT userData FROM users WHERE username=?";
-//            try (PreparedStatement ps = conn.prepareStatement(statement)) {
-//                ps.setString(1, username);
-//                try (ResultSet rs = ps.execut....... {
-//                    if (rs.next()) {
-//                        return readUser(rs);
-//                    }
-//                }
-//            }
-//        } catch (Exception ex) {
+    public UserData getUser(String username) {
+      try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT userData FROM users WHERE username=?";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                try (ResultSet rs = preparedStatement.executeQuery()){
+                    if (rs.next()) {
+                        return readUser(rs);
+                    }
+                }
+            }
+        } catch (Exception ex) {
 //            throw new DataAccessException("unable to read data: " + ex.getMessage());
-//        }
-//
-//        return null;
-//    }
+        }
 
-//    public UserData readUser(ResultSet rs) {
-//        var json = rs.getString("userData");
-//        UserData userData = new Gson().fromJson(json, UserData.class);
-//        return userData;
-//    }
+        return null;
+    }
+
+    public UserData readUser(ResultSet rs) {
+        UserData userData = null;
+
+        try {
+            var json = rs.getString("userData");
+            userData = new Gson().fromJson(json, UserData.class);
+        } catch (SQLException ex) {
+
+        }
+
+        return userData;
+    }
 
     public int createGame(String gameName) {
         return 0;
     }
 
-    public void createUser(UserData userData) {}
+    public void createUser(UserData userData) {
+        var statement = "INSERT INTO users (username, json) VALUES(?, ?)";
+        String username = userData.username();
+        String json = new Gson().toJson(userData);
 
-    public void createAuth(AuthData authData) {}
+        try {
+            var conn = DatabaseManager.getConnection();
+
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, json);
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (Exception ex) {
+            System.out.println("uh oh");
+        }
+    }
+
+    public void createAuth(AuthData authData) {
+        var statement = "INSERT INTO users (username, json) VALUES(?, ?)";
+        String authToken = authData.authToken();
+        String json = new Gson().toJson(authToken);
+
+        try {
+            var conn = DatabaseManager.getConnection();
+
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.setString(2, json);
+
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (Exception ex) {
+            System.out.println("uh oh");
+        }
+    }
 
     public boolean deleteAuth(String authToken) {
         return false;
@@ -72,28 +117,28 @@ public class MySQLDataAccess {//implements DataAccess {
 
     public void setWhitePlayer(int gameID, String username) {}
 
-    public UserData getUser(String username) {
-        return null;
-    }
+//    public UserData getUser(String username) {
+//        return null;
+//    }
 
     private final String[] createStatements = {
         """
         CREATE TABLE IF NOT EXISTS users (
             username VARCHAR(255) NOT NULL,
-            userData LONGTEXT NOT NULL,
-          )""",
+            userData LONGTEXT NOT NULL
+        );""",
 
         """
         CREATE TABLE IF NOT EXISTS activeUsers (
             authToken VARCHAR(255) NOT NULL,
-            authData LONGTEXT NOT NULL,
-        )""",
+            authData LONGTEXT NOT NULL
+        );""",
 
         """
         CREATE TABLE IF NOT EXISTS activeGames (
-            gameID INT NOT NULL AUTO_INCREMENT,
-            userData LONGTEXT NOT NULL,
-        )"""
+            gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            userData LONGTEXT NOT NULL
+        );"""
 
 
     };
