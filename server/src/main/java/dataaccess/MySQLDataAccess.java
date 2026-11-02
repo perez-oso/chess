@@ -100,7 +100,31 @@ public class MySQLDataAccess {//implements DataAccess {
         return false;
     }
 
-    public void clear() {}
+    public void clear() {
+        try {
+            var conn = DatabaseManager.getConnection();
+
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE users")) {
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE activeUsers")) {
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            try (var preparedStatement = conn.prepareStatement("TRUNCATE activeGames")) {
+                preparedStatement.executeUpdate();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (Exception ex) {
+            System.out.println(toString());
+        }
+    }
 
     public Collection<GameData> getGamesList() {
         return java.util.List.of();
