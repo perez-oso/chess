@@ -97,7 +97,7 @@ public class Server {
     private void logout(Context ctx) {
         try {
             LogoutRequest logoutRequest;
-//            System.out.println("DEBUG: " + ctx.header("authorization"));
+            System.out.println("DEBUG: " + ctx.header("authorization"));
 
             try {
                 logoutRequest = new LogoutRequest(ctx.header("authorization"));

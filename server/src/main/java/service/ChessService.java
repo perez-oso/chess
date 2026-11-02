@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ChessService {
-    DataAccess dataAccess;
+    MySQLDataAccess dataAccess;
 
-    public ChessService(DataAccess dataAccess) {
+    public ChessService(MySQLDataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
