@@ -5,6 +5,7 @@ import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -38,10 +39,11 @@ public class ChessService {
             }
 
             AuthData authData;
+            String hash = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
 
             try {
                 authData = new AuthData(generateToken(), registerRequest.username());
-                dataAccess.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+                dataAccess.createUser(new UserData(registerRequest.username(), hash, registerRequest.email()));
                 dataAccess.createAuth(authData);
             } catch (Exception ex) {
                 throw new DataAccessException("Error: " + ex.getMessage());
@@ -71,7 +73,7 @@ public class ChessService {
             throw new DataAccessException("Error: " + ex.getMessage());
         }
 
-        if (userData == null || !userData.password().equals(loginRequest.password())) {
+        if (userData == null || !BCrypt.checkpw(loginRequest.password(), userData.password())) {
             throw new UnauthorizedException("Error: unauthorized");
         }
 

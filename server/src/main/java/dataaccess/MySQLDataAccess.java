@@ -21,7 +21,7 @@ public class MySQLDataAccess {//implements DataAccess {
         try {
             configureDatabase();
         } catch (DataAccessException ex) {
-            System.out.println("unable to configure database: " + ex.getMessage());
+            throw new RuntimeException("unable to configure database: " + ex.getMessage());
         }
 }
 
@@ -38,7 +38,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-          System.out.println("uh oh 4");
+            throw new RuntimeException("unable to get user: " + ex.getMessage());
         }
 
         return null;
@@ -51,7 +51,7 @@ public class MySQLDataAccess {//implements DataAccess {
             var json = rs.getString("userData");
             userData = new Gson().fromJson(json, UserData.class);
         } catch (SQLException ex) {
-
+            throw new RuntimeException("unable to read user: " + ex.getMessage());
         }
 
         return userData;
@@ -69,7 +69,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-
+            throw new RuntimeException("unable to get auth: " + ex.getMessage());
         }
 
         return null;
@@ -82,7 +82,7 @@ public class MySQLDataAccess {//implements DataAccess {
             var json = rs.getString("authData");
             authData = new Gson().fromJson(json, AuthData.class);
         } catch (SQLException ex) {
-
+            throw new RuntimeException("unable to read auth: " + ex.getMessage());
         }
 
         return authData;
@@ -177,37 +177,18 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void setBlackPlayer(int gameID, String username) {
-//        GameData oldGameData = getGame(gameID);
-//        GameData newGameData = new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), username, oldGameData.gameName(), oldGameData.game());
-//        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
-//        executeUpdate(statement, newGameData, gameID);
+        GameData oldGameData = getGame(gameID);
+        GameData newGameData = new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), username, oldGameData.gameName(), oldGameData.game());
+        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
+        executeUpdate(statement, newGameData, gameID);
     }
 
     public void setWhitePlayer(int gameID, String username) {
-//        GameData oldGameData = getGame(gameID);
-//        GameData newGameData = new GameData(oldGameData.gameID(), username, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
-//        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
-//        executeUpdate(statement, newGameData, gameID);
+        GameData oldGameData = getGame(gameID);
+        GameData newGameData = new GameData(oldGameData.gameID(), username, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
+        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
+        executeUpdate(statement, newGameData, gameID);
     }
-
-//    private ResultSet executeQuery(String statement, Object param) {
-//        try (Connection conn = DatabaseManager.getConnection()) {
-//            try (var preparedStatement = conn.prepareStatement(statement)) {
-//                if (param instanceof Integer p) preparedStatement.setInt(1, p);
-//                else if (param instanceof String p) preparedStatement.setString(1, p);
-//
-//                try (ResultSet rs = preparedStatement.executeQuery()){
-//                    if (rs.next()) {
-//                        return rs;
-//                    } else {
-//                        return null;
-//                    }
-//                }
-//            }
-//        } catch (Exception ex) {
-////          System.out.println("uh oh 4");
-//        }
-//    }
 
     private int executeUpdate(String statement, Object... params) {
         try {
@@ -231,7 +212,6 @@ public class MySQLDataAccess {//implements DataAccess {
 
                     ResultSet rs = ps.getGeneratedKeys();
                     if (rs.next()) {
-//                        System.out.println(String.format("gameID: %d", rs.getInt(1)));
                         return rs.getInt(1);
                     }
 
