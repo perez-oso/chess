@@ -2,14 +2,17 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import kotlin.TuplesKt;
 import model.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
+import javax.lang.model.type.PrimitiveType;
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import javax.xml.crypto.Data;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -24,7 +27,7 @@ public class MySQLDataAccess {//implements DataAccess {
 
 
     public UserData getUser(String username) {
-      try (Connection conn = DatabaseManager.getConnection()) {
+        try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT userData FROM users WHERE username=?";
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setString(1, username);
@@ -35,7 +38,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-//          System.out.println("uh oh 4");
+          System.out.println("uh oh 4");
         }
 
         return null;
@@ -66,7 +69,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-//          System.out.println("uh oh 4");
+
         }
 
         return null;
@@ -86,9 +89,9 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public int createGame(String gameName) {
-        var statement = "INSERT INTO games (gameID, gameData) VALUES(?, ?)";
-        GameData gameData = null;
-        int gameID = executeUpdate(statement, 0, gameData);
+        var statement = "INSERT INTO games (gameData) VALUES(?)";
+        GameData gameData = new GameData(0, null, null, gameName, null);
+        int gameID = executeUpdate(statement, gameData);
 
         gameData = new GameData(gameID, null, null, gameName, new ChessGame());
         statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
@@ -119,7 +122,23 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public Collection<GameData> getGamesList() {
-        return java.util.List.of();
+        Collection<GameData> gamesList = new ArrayList<>(){};
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameData FROM games";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                try (ResultSet rs = preparedStatement.executeQuery()){
+                    while (rs.next()) {
+                        gamesList.add(readGame(rs));
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(String.format("unable to get games list: %s", ex.getMessage()));
+        }
+
+        return gamesList;
+
     }
 
     public GameData getGame(int gameID) {
@@ -134,7 +153,7 @@ public class MySQLDataAccess {//implements DataAccess {
                 }
             }
         } catch (Exception ex) {
-//          System.out.println("uh oh 4");
+            throw new RuntimeException(String.format("unable to get game: %s", ex.getMessage()));
         }
 
         return null;
@@ -145,43 +164,83 @@ public class MySQLDataAccess {//implements DataAccess {
 
         try {
             var json = rs.getString("gameData");
-            gameData = new Gson().fromJson(json, GameData.class);
+            System.out.println("DEBUG: " + json);
+            Gson gson = new GsonBuilder()
+                    .enableComplexMapKeySerialization()
+                    .create();
+            gameData = gson.fromJson(json, GameData.class);
         } catch (SQLException ex) {
-
+            throw new RuntimeException(String.format("unable to read game: %s", ex.getMessage()));
         }
 
         return gameData;
     }
 
-    public void setBlackPlayer(int gameID, String username) {}
+    public void setBlackPlayer(int gameID, String username) {
+//        GameData oldGameData = getGame(gameID);
+//        GameData newGameData = new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), username, oldGameData.gameName(), oldGameData.game());
+//        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
+//        executeUpdate(statement, newGameData, gameID);
+    }
 
-    public void setWhitePlayer(int gameID, String username) {}
+    public void setWhitePlayer(int gameID, String username) {
+//        GameData oldGameData = getGame(gameID);
+//        GameData newGameData = new GameData(oldGameData.gameID(), username, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
+//        String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
+//        executeUpdate(statement, newGameData, gameID);
+    }
+
+//    private ResultSet executeQuery(String statement, Object param) {
+//        try (Connection conn = DatabaseManager.getConnection()) {
+//            try (var preparedStatement = conn.prepareStatement(statement)) {
+//                if (param instanceof Integer p) preparedStatement.setInt(1, p);
+//                else if (param instanceof String p) preparedStatement.setString(1, p);
+//
+//                try (ResultSet rs = preparedStatement.executeQuery()){
+//                    if (rs.next()) {
+//                        return rs;
+//                    } else {
+//                        return null;
+//                    }
+//                }
+//            }
+//        } catch (Exception ex) {
+////          System.out.println("uh oh 4");
+//        }
+//    }
 
     private int executeUpdate(String statement, Object... params) {
         try {
-        try (Connection conn = DatabaseManager.getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (int i = 0; i < params.length; i++) {
-                    Object param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof UserData p) ps.setString(i + 1, new Gson().toJson(p));
-                    else if (param instanceof AuthData p) ps.setString(i + 1, new Gson().toJson(p));
-                    else if (param instanceof GameData p) ps.setString(i + 1, new Gson().toJson(p));
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
+            try (Connection conn = DatabaseManager.getConnection()) {
+                try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                    for (int i = 0; i < params.length; i++) {
+                        Object param = params[i];
+                        if (param instanceof String p) ps.setString(i + 1, p);
+                        else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                        else if (param instanceof UserData p) ps.setString(i + 1, new Gson().toJson(p));
+                        else if (param instanceof AuthData p) ps.setString(i + 1, new Gson().toJson(p));
+                        else if (param instanceof GameData p) {
+                            Gson gson = new GsonBuilder()
+                                    .enableComplexMapKeySerialization()
+                                    .create();
+                            ps.setString(i + 1, gson.toJson(p));
+                        }
+                        else if (param == null) ps.setNull(i + 1, NULL);
+                    }
+                    ps.executeUpdate();
 
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
+                    ResultSet rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+//                        System.out.println(String.format("gameID: %d", rs.getInt(1)));
+                        return rs.getInt(1);
+                    }
 
-                return 0;
+                    return 0;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
             }
-        } catch (SQLException e) {
-//            throw new ResponseException(ResponseException.Code.ServerError, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        } } catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 
