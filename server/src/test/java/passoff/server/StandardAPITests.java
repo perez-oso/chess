@@ -61,7 +61,6 @@ public class StandardAPITests {
         Assertions.assertTrue(htmlFromServer.contains("CS 240 Chess Server Web API"),
                 "file returned did not contain an exact match of text from provided index.html");
     }
-
     @Test
     @Order(2)
     @DisplayName("Normal User Login")
@@ -73,7 +72,7 @@ public class StandardAPITests {
                 "Response did not give the same username as user");
         Assertions.assertNotNull(loginResult.getAuthToken(), "Response did not return authentication String");
     }
-
+    
     @Test
     @Order(3)
     @DisplayName("Login Bad Request")
@@ -144,8 +143,7 @@ public class StandardAPITests {
     @Test
     @Order(8)
     @DisplayName("Normal Logout")
-    public void logoutSuccess() {
-        //log out existing user
+    public void logoutSuccess() { //log out existing user
         TestResult result = serverFacade.logout(existingAuth);
 
         assertHttpOk(result);
@@ -155,8 +153,7 @@ public class StandardAPITests {
     @Order(9)
     @DisplayName("Invalid Auth Logout")
     public void logoutTwice() {
-        //log out user twice
-        //second logout should fail
+        //log out user twice//second logout should fail
         serverFacade.logout(existingAuth);
         TestResult result = serverFacade.logout(existingAuth);
 
