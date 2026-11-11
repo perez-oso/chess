@@ -213,7 +213,9 @@ public class MySQLDataAccess implements DataAccess {
                                     .create();
                             ps.setString(i + 1, gson.toJson(p));
                         }
-                        else if (param == null) ps.setNull(i + 1, NULL);
+                        else if (param == null) {
+                            ps.setNull(i + 1, NULL);
+                        }
                     }
                     ps.executeUpdate();
 
