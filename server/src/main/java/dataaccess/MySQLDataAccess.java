@@ -23,7 +23,7 @@ public class MySQLDataAccess {//implements DataAccess {
         } catch (DataAccessException ex) {
             throw new RuntimeException("unable to configure database: " + ex.getMessage());
         }
-}
+    }
 
 
     public UserData getUser(String username) {
@@ -116,9 +116,13 @@ public class MySQLDataAccess {//implements DataAccess {
     }
 
     public void clear() {
-        executeUpdate("TRUNCATE users");
-        executeUpdate("TRUNCATE auths");
-        executeUpdate("TRUNCATE games");
+        try {
+            executeUpdate("TRUNCATE users");
+            executeUpdate("TRUNCATE auths");
+            executeUpdate("TRUNCATE games");
+        } catch (Exception ex) {
+            throw new RuntimeException("Unable to clear database: " + ex.getMessage());
+        }
     }
 
     public Collection<GameData> getGamesList() {
@@ -217,14 +221,12 @@ public class MySQLDataAccess {//implements DataAccess {
 
                     return 0;
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            } catch (SQLException ex) {
+                throw new RuntimeException(String.format("unable to update database: %s, %s", statement, ex.getMessage()));
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            throw new RuntimeException(String.format("unable to connect to database: %s, %s", statement, ex.getMessage()));
         }
-
-        return 0;
     }
 
     private final String[] createStatements = {
