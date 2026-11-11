@@ -61,10 +61,7 @@ public class ChessMove {
     }
 
     @Override
-    public String toString() { //boolean endOnly = true) {
-//        if (endOnly) {
-            return this.start.toString() + "->" + this.end.toString();// + " (" + this.promotion + ")";
-//        }
-//        return "{" + this.start.toString() + ", " +  this.end.toString() + "}";
-    }
+    public String toString() {
+        return this.start.toString() + "->" + this.end.toString();// + " (" + this.promotion + ")";
+  }
 }

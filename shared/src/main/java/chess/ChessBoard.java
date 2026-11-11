@@ -43,55 +43,56 @@ public class ChessBoard {
                 ChessPosition currentPosition = new ChessPosition(row, column);
                 boardString.append("|");
 
-                if (this.activePieces.containsKey(currentPosition)) {
-                    ChessPiece piece = this.activePieces.get(currentPosition);
+                if (!this.activePieces.containsKey(currentPosition)) {
+                    boardString.append(" ");
+                    continue;
+                }
 
-                    if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        switch(piece.pieceType) {
-                            case PAWN:
-                                boardString.append("p");
-                                break;
-                            case KNIGHT:
-                                boardString.append("n");
-                                break;
-                            case QUEEN:
-                                boardString.append("q");
-                                break;
-                            case KING:
-                                boardString.append("k");
-                                break;
-                            case ROOK:
-                                boardString.append("r");
-                                break;
-                            case BISHOP:
-                                boardString.append("b");
-                                break;
+                ChessPiece piece = this.activePieces.get(currentPosition);
 
-                        }
-                    } else {
-                        switch(piece.pieceType) {
-                            case PAWN:
-                                boardString.append("P");
-                                break;
-                            case KNIGHT:
-                                boardString.append("N");
-                                break;
-                            case QUEEN:
-                                boardString.append("Q");
-                                break;
-                            case KING:
-                                boardString.append("K");
-                                break;
-                            case ROOK:
-                                boardString.append("R");
-                                break;
-                            case BISHOP:
-                                boardString.append("B");
-                                break;
-                        }
+                if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    switch(piece.pieceType) {
+                        case PAWN:
+                            boardString.append("p");
+                            break;
+                        case KNIGHT:
+                            boardString.append("n");
+                            break;
+                        case QUEEN:
+                            boardString.append("q");
+                            break;
+                        case KING:
+                            boardString.append("k");
+                            break;
+                        case ROOK:
+                            boardString.append("r");
+                            break;
+                        case BISHOP:
+                            boardString.append("b");
+                            break;
+
                     }
                 } else {
-                    boardString.append(" ");
+                    switch(piece.pieceType) {
+                        case PAWN:
+                            boardString.append("P");
+                            break;
+                        case KNIGHT:
+                            boardString.append("N");
+                            break;
+                        case QUEEN:
+                            boardString.append("Q");
+                            break;
+                        case KING:
+                            boardString.append("K");
+                            break;
+                        case ROOK:
+                            boardString.append("R");
+                            break;
+                        case BISHOP:
+                            boardString.append("B");
+                            break;
+                    }
                 }
             }
                 boardString.append("|");
