@@ -38,14 +38,6 @@ public class MemoryDataAccess implements DataAccess {
         this.gameID = 0;
     }
 
-    public UserData getUserByAuth(String authToken) {
-        if (activeUsers.containsKey(authToken)) {
-            return this.getUser(activeUsers.get(authToken).username());
-        }
-
-        return null;
-    }
-
     public void deleteAuth(String authToken) {
         activeUsers.remove(authToken);
     }

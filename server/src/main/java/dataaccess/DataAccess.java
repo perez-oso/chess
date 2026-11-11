@@ -16,8 +16,6 @@ public interface DataAccess {
 
     Collection<GameData> getGamesList();
 
-    UserData getUserByAuth(String authToken);
-
     GameData getGame(int gameID);
 
     void setBlackPlayer(int gameID, String username);
