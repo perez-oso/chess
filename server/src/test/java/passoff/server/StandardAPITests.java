@@ -72,7 +72,7 @@ public class StandardAPITests {
                 "Response did not give the same username as user");
         Assertions.assertNotNull(loginResult.getAuthToken(), "Response did not return authentication String");
     }
-    
+
     @Test
     @Order(3)
     @DisplayName("Login Bad Request")
