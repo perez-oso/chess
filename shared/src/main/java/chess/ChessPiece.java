@@ -77,7 +77,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-//        throw new RuntimeException("Not implemented");
         Collection<ChessMove> possibleMoves = new ArrayList<ChessMove>() {};
         ChessPosition testPosition;
         ChessGame.TeamColor thisColor = this.getTeamColor();
@@ -105,7 +104,6 @@ public class ChessPiece {
                 testPosition = new ChessPosition(myPosition.getRow() + inc, myPosition.getColumn() + inc);
                 if (board.getPiece(testPosition) != null && (board.getPiece(testPosition).getTeamColor() != thisColor)) {
                     pawnMovesBeforePromotion.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
-//                    System.out.println("DEBUG: " + this.getTeamColor() + " " + this.pieceType + " - " + board.getPiece(testPosition).getTeamColor() + " " + board.getPiece(testPosition).pieceType);
                 } // if second diagonal is empty or capturable
 
                 if ((this.getTeamColor() == ChessGame.TeamColor.BLACK && myPosition.getRow() == 2) ||
@@ -134,49 +132,39 @@ public class ChessPiece {
                 rookTests(board, myPosition, possibleMoves);
                 break;
             case PieceType.KNIGHT:
-                int row, col;
-
-                int[][] xyKnight = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-
-                for (int i = 0; i < 8; i++) {
-                    row = myPosition.getRow() + xyKnight[i][0];
-                    col = myPosition.getColumn() + xyKnight[i][1];
-
-                    if (0 < row && row <= 8 && 0 < col && col <= 8) {
-                        testPosition = new ChessPosition(row, col);
-                        if (board.getPiece(testPosition) == null || board.getPiece(testPosition).getTeamColor() != this.getTeamColor()) {
-                            possibleMoves.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
-                        }
-                    }
-                }
+                int[][] knightMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+                knightAndKingTests(knightMoves, possibleMoves, myPosition, board);
                 break;
             case PieceType.BISHOP:
                 bishopTests(board, myPosition, possibleMoves);
                 break;
             case PieceType.KING:
-                int[][] xyKing = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-                int x, y;
-
-                for (int i = 0; i < 8; i++) {
-                    x = myPosition.getRow() + xyKing[i][0];
-                    y = myPosition.getColumn() + xyKing[i][1];
-
-                    if (0 < x && x < 9 && 0 < y && y < 9) {
-                        testPosition = new ChessPosition(x, y);
-                        if (board.getPiece(testPosition) == null || board.getPiece(testPosition).getTeamColor() != this.getTeamColor()) {
-                            possibleMoves.add(new ChessMove(myPosition, testPosition, null)); // add it to the list
-                        }
-                    }
-                }
-
+                int[][] kingMoves = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+                knightAndKingTests(kingMoves, possibleMoves, myPosition, board);
                 break;
             case PieceType.QUEEN:
                 rookTests(board, myPosition, possibleMoves);
                 bishopTests(board, myPosition, possibleMoves);
         }
 
-//        System.out.println("DEBUG: possible moves " + possibleMoves.toString());
             return possibleMoves;
+    }
+
+    void knightAndKingTests(int[][] moves, Collection<ChessMove> possibleMoves, ChessPosition myPosition, ChessBoard board) {
+        int row, col;
+        ChessPosition testPosition;
+
+        for (int i = 0; i < 8; i++) {
+            row = myPosition.getRow() + moves[i][0];
+            col = myPosition.getColumn() + moves[i][1];
+
+            if (0 < row && row <= 8 && 0 < col && col <= 8) {
+                testPosition = new ChessPosition(row, col);
+                if (board.getPiece(testPosition) == null || board.getPiece(testPosition).getTeamColor() != this.getTeamColor()) {
+                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
+                }
+            }
+        }
     }
 
     boolean testAndAddPosition(ChessPosition testPosition, ChessPosition myPosition, Collection<ChessMove> possibleMoves, ChessBoard board) {
