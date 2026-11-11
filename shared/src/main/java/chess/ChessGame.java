@@ -81,7 +81,7 @@ public class ChessGame {
 
     public Collection<ChessMove> pareInvalidMoves(Collection<ChessMove> possibleMoves, TeamColor  teamColor) {
         Collection<ChessMove> validMoves = new ArrayList<ChessMove>();
-        ChessBoard oldBoard = this.getBoard().Copy();
+        ChessBoard oldBoard = this.getBoard().copy();
 
         for (var move : possibleMoves) {
             this.setBoard(this.getBoard().moveCopy(move));

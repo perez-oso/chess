@@ -135,11 +135,11 @@ public class ChessBoard {
 //        throw new RuntimeException("Not implemented");
         activePieces.clear();
 
-        PlacePieces(ChessGame.TeamColor.BLACK);
-        PlacePieces(ChessGame.TeamColor.WHITE);
+        placePieces(ChessGame.TeamColor.BLACK);
+        placePieces(ChessGame.TeamColor.WHITE);
     }
 
-    public void PlacePieces(ChessGame.TeamColor color) {
+    public void placePieces(ChessGame.TeamColor color) {
         int row = 8;
 
         if (color == ChessGame.TeamColor.WHITE) {
@@ -219,7 +219,7 @@ public class ChessBoard {
         return teamMoves;
     }
 
-    public ChessBoard Copy() {
+    public ChessBoard copy() {
         ChessBoard newBoard = new ChessBoard();
         ChessPiece currentPiece;
 

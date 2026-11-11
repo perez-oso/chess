@@ -131,7 +131,7 @@ public class ChessPiece {
                 }
                 break;
             case PieceType.ROOK:
-                RookTests(board, myPosition, possibleMoves);
+                rookTests(board, myPosition, possibleMoves);
                 break;
             case PieceType.KNIGHT:
                 int row, col;
@@ -151,7 +151,7 @@ public class ChessPiece {
                 }
                 break;
             case PieceType.BISHOP:
-                BishopTests(board, myPosition, possibleMoves);
+                bishopTests(board, myPosition, possibleMoves);
                 break;
             case PieceType.KING:
                 int[][] xyKing = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -171,26 +171,33 @@ public class ChessPiece {
 
                 break;
             case PieceType.QUEEN:
-                RookTests(board, myPosition, possibleMoves);
-                BishopTests(board, myPosition, possibleMoves);
+                rookTests(board, myPosition, possibleMoves);
+                bishopTests(board, myPosition, possibleMoves);
         }
 
 //        System.out.println("DEBUG: possible moves " + possibleMoves.toString());
             return possibleMoves;
     }
 
-        void RookTests(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves) {
+    boolean testAndAddPosition(ChessPosition testPosition, ChessPosition myPosition, Collection<ChessMove> possibleMoves, ChessBoard board) {
+        if (board.getPiece(testPosition) == null) {
+            possibleMoves.add(new ChessMove(myPosition, testPosition, null));
+            return false;
+        } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
+            possibleMoves.add(new ChessMove(myPosition, testPosition, null));
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+        void rookTests(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves) {
             ChessPosition testPosition;
 
             for (int i = myPosition.getRow() + 1; i <= 8; i++) {
                 testPosition = new ChessPosition(i, myPosition.getColumn());
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -198,12 +205,7 @@ public class ChessPiece {
             for (int i = myPosition.getRow() - 1; i > 0; i--) {
                 testPosition = new ChessPosition(i, myPosition.getColumn());
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -211,12 +213,7 @@ public class ChessPiece {
             for (int i = myPosition.getColumn() + 1; i <= 8; i++) {
                 testPosition = new ChessPosition(myPosition.getRow(), i);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -224,29 +221,19 @@ public class ChessPiece {
             for (int i = myPosition.getColumn() - 1; i > 0; i--) {
                 testPosition = new ChessPosition(myPosition.getRow(), i);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
     }
 
-        void BishopTests(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves) {
+        void bishopTests(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> possibleMoves) {
             ChessPosition testPosition;
 
             for (int i = myPosition.getRow() + 1, j = myPosition.getColumn() + 1; i <= 8 && j <= 8; i++, j++) {
                 testPosition = new ChessPosition(i, j);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -254,12 +241,7 @@ public class ChessPiece {
             for (int i = myPosition.getRow() - 1, j = myPosition.getColumn() - 1; i > 0 && j > 0; i--, j--) {
                     testPosition = new ChessPosition(i, j);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -267,12 +249,7 @@ public class ChessPiece {
             for (int i = 1; (myPosition.getRow() + i <= 8) && (myPosition.getColumn() - i > 0); i++) {
                 testPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
@@ -280,12 +257,7 @@ public class ChessPiece {
             for (int i = 1; (myPosition.getRow() - i > 0) && (myPosition.getColumn() + i <= 8); i++) {
                 testPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
 
-                if (board.getPiece(testPosition) == null) {
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                } else if (board.getPiece(testPosition).getTeamColor() != this.getTeamColor()){
-                    possibleMoves.add(new ChessMove(myPosition, testPosition, null));
-                    break;
-                } else {
+                if (testAndAddPosition(testPosition, myPosition, possibleMoves, board)) {
                     break;
                 }
             }
