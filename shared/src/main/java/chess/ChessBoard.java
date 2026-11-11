@@ -195,13 +195,14 @@ public class ChessBoard {
     public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
         ChessPosition kingPosition = null;
 
-        for (var entry : this.activePieces.entrySet())
+        for (var entry : this.activePieces.entrySet()) {
             if (entry.getValue().getTeamColor() == teamColor) {
                 if (entry.getValue().getPieceType() == KING) {
                     kingPosition = entry.getKey();
                     break;
                 }
             }
+        }
 
 //        System.out.println("DEBUG: KING @ " + kingPosition);
         return kingPosition;
@@ -210,11 +211,12 @@ public class ChessBoard {
     public Collection<ChessMove> getTeamMoves(ChessGame.TeamColor teamColor) {
         Collection<ChessMove> teamMoves = new ArrayList<ChessMove>();
 
-        for (var entry : this.activePieces.entrySet())
+        for (var entry : this.activePieces.entrySet()) {
             if (entry.getValue().getTeamColor() == teamColor) {
                 Collection<ChessMove> pieceMoves = entry.getValue().pieceMoves(this, entry.getKey());
                 teamMoves.addAll(pieceMoves);
             }
+        }
 
 //        System.out.println("DEBUG: opposing moves " + teamMoves.toString());
         return teamMoves;

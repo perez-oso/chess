@@ -121,7 +121,8 @@ public class ChessServiceTests {
         ChessService chessService = new ChessService(new MySQLDataAccess());
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
-            assertThrows(UnauthorizedException.class, () -> {CreateGameResult result = chessService.createGame("shibboleth", new CreateGameRequest("kasparov vs deep blue"));});
+            assertThrows(UnauthorizedException.class,
+                    () -> {CreateGameResult result = chessService.createGame("shibboleth", new CreateGameRequest("kasparov vs deep blue"));});
 
         } catch (Exception ex) {
             fail();
@@ -135,6 +136,7 @@ public class ChessServiceTests {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             assertEquals(0, chessService.listGames(new ListGamesRequest(authToken)).games().size());
         } catch (Exception ex) {
+            System.err.println(ex.getMessage());
             fail();
         }
     }
@@ -160,7 +162,8 @@ public class ChessServiceTests {
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
             int gameID = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue")).gameID();
 
-            assertThrows(UnauthorizedException.class, () -> {chessService.joinGame("nonsense", new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
+            assertThrows(UnauthorizedException.class,
+                    () -> {chessService.joinGame("nonsense", new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
         } catch (Exception ex) {
             fail();
         }
@@ -173,7 +176,8 @@ public class ChessServiceTests {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
             chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));
-            assertThrows(AlreadyTakenException.class, () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
+            assertThrows(AlreadyTakenException.class,
+                    () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, game.gameID()));});
         } catch (Exception ex) {
             fail();
         }
@@ -185,7 +189,8 @@ public class ChessServiceTests {
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
-            assertThrows(BadRequestException.class, () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, 1000));});
+            assertThrows(BadRequestException.class,
+                    () -> {chessService.joinGame(authToken, new JoinGameRequest(ChessGame.TeamColor.BLACK, 1000));});
         } catch (Exception ex) {
             fail();
         }

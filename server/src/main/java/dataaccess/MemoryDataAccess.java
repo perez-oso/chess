@@ -59,13 +59,15 @@ public class MemoryDataAccess implements DataAccess {
 
     public void setBlackPlayer(int gameID, String blackUsername) {
         GameData oldGameData = this.activeGames.get(gameID);
-        GameData newGameData = new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), blackUsername, oldGameData.gameName(), oldGameData.game());
+        GameData newGameData =
+                new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), blackUsername, oldGameData.gameName(), oldGameData.game());
         this.activeGames.put(gameID, newGameData);
     }
 
     public void setWhitePlayer(int gameID, String whiteUsername) {
         GameData oldGameData = this.activeGames.get(gameID);
-        GameData newGameData = new GameData(oldGameData.gameID(), whiteUsername, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
+        GameData newGameData =
+                new GameData(oldGameData.gameID(), whiteUsername, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
         this.activeGames.put(gameID, newGameData);
     }
 }

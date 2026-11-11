@@ -128,7 +128,8 @@ public class ChessService {
         return listGamesResult;
     }
 
-    public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException, UnauthorizedException, BadRequestException {
+    public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest)
+            throws DataAccessException, UnauthorizedException, BadRequestException {
         AuthData authData;
         CreateGameResult createGameResult;
 
@@ -155,7 +156,8 @@ public class ChessService {
         return createGameResult;
     }
 
-    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest)
+            throws DataAccessException, UnauthorizedException, BadRequestException, AlreadyTakenException {
         AuthData authData;
         GameData gameData;
 

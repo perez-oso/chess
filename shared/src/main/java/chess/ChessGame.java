@@ -107,12 +107,20 @@ public class ChessGame {
 
         ChessPiece movedPiece = this.getBoard().getPiece(move.getStartPosition());
 
-        if (movedPiece == null) throw new InvalidMoveException("There is no piece at this location.");
-        if (movedPiece.getTeamColor() != this.currentTeamColor) throw new InvalidMoveException("It is " + this.currentTeamColor.toString() + "'s turn.");
+        if (movedPiece == null) {
+            throw new InvalidMoveException("There is no piece at this location.");
+        }
 
-        Collection<ChessMove> validMoves = this.pareInvalidMoves(movedPiece.pieceMoves(this.getBoard(), move.getStartPosition()), movedPiece.getTeamColor());
+        if (movedPiece.getTeamColor() != this.currentTeamColor) {
+            throw new InvalidMoveException("It is " + this.currentTeamColor.toString() + "'s turn.");
+        }
 
-        if (!validMoves.contains(move)) throw new InvalidMoveException("This move is not valid.");
+        Collection<ChessMove> validMoves =
+                this.pareInvalidMoves(movedPiece.pieceMoves(this.getBoard(), move.getStartPosition()), movedPiece.getTeamColor());
+
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("This move is not valid.");
+        }
 
 //        System.out.println("DEBUG 104: \n" + this.getBoard().toString());
         this.setBoard(this.getBoard().moveCopy(move));
@@ -147,9 +155,7 @@ public class ChessGame {
         Collection<ChessMove> opposingTeamMoves = this.board.getTeamMoves(opposingTeamColor);
 
         for (var entry : opposingTeamMoves) {
-//            System.out.println("DEBUG 89: " + entry.getEndPosition().toString() + " " + kingPosition.toString() + " " + (Objects.equals(entry.getEndPosition().toString(), kingPosition.toString())));
             if (Objects.equals(entry.getEndPosition(), kingPosition)) {
-//                System.out.println("DEBUG: kingpos in oppmoves");
                 return true;
             }
         }
