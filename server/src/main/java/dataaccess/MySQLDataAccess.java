@@ -26,7 +26,7 @@ public class MySQLDataAccess implements DataAccess {
     }
 
 
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT userData FROM users WHERE username=?";
             try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -57,7 +57,7 @@ public class MySQLDataAccess implements DataAccess {
         return userData;
     }
 
-    public AuthData getAuth(String authToken) {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             var statement = "SELECT authData FROM auths WHERE authToken=?";
             try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -88,7 +88,7 @@ public class MySQLDataAccess implements DataAccess {
         return authData;
     }
 
-    public int createGame(String gameName) {
+    public int createGame(String gameName) throws DataAccessException {
         var statement = "INSERT INTO games (gameData) VALUES(?)";
         GameData gameData = new GameData(0, null, null, gameName, null);
         int gameID = executeUpdate(statement, gameData);
@@ -100,17 +100,17 @@ public class MySQLDataAccess implements DataAccess {
         return gameID;
     }
 
-    public void createUser(UserData userData) {
+    public void createUser(UserData userData) throws DataAccessException  {
         var statement = "INSERT INTO users (username, userData) VALUES(?, ?)";
         executeUpdate(statement, userData.username(), userData);
     }
 
-    public void createAuth(AuthData authData) {
+    public void createAuth(AuthData authData) throws DataAccessException {
         var statement = "INSERT INTO auths (authToken, authData) VALUES(?, ?)";
         executeUpdate(statement, authData.authToken(), authData);
     }
 
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
         var statement = "DELETE FROM auths WHERE authToken=?";
         executeUpdate(statement, authToken);
     }
@@ -180,22 +180,21 @@ public class MySQLDataAccess implements DataAccess {
         return gameData;
     }
 
-    public void setBlackPlayer(int gameID, String username) {
+    public void setBlackPlayer(int gameID, String username) throws DataAccessException {
         GameData oldGameData = getGame(gameID);
         GameData newGameData = new GameData(oldGameData.gameID(), oldGameData.whiteUsername(), username, oldGameData.gameName(), oldGameData.game());
         String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
         executeUpdate(statement, newGameData, gameID);
     }
 
-    public void setWhitePlayer(int gameID, String username) {
+    public void setWhitePlayer(int gameID, String username) throws DataAccessException {
         GameData oldGameData = getGame(gameID);
         GameData newGameData = new GameData(oldGameData.gameID(), username, oldGameData.blackUsername(), oldGameData.gameName(), oldGameData.game());
         String statement = "UPDATE games SET gameData = ? WHERE gameID = ?";
         executeUpdate(statement, newGameData, gameID);
     }
 
-    private int executeUpdate(String statement, Object... params) {
-        try {
+    private int executeUpdate(String statement, Object... params) throws DataAccessException {
             try (Connection conn = DatabaseManager.getConnection()) {
                 try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                     for (int i = 0; i < params.length; i++) {
@@ -228,9 +227,6 @@ public class MySQLDataAccess implements DataAccess {
             } catch (SQLException ex) {
                 throw new RuntimeException(String.format("unable to update database: %s, %s", statement, ex.getMessage()));
             }
-        } catch (Exception ex) {
-            throw new RuntimeException(String.format("unable to connect to database: %s, %s", statement, ex.getMessage()));
-        }
     }
 
     private final String[] createStatements = {
