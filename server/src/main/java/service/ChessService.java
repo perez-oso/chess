@@ -11,9 +11,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ChessService {
-    MySQLDataAccess dataAccess;
+    DataAccess dataAccess;
 
-    public ChessService(MySQLDataAccess dataAccess) {
+    public ChessService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 

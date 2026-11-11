@@ -14,6 +14,8 @@ public interface DataAccess {
 
     void clear();
 
+    AuthData getAuth(String authToken);
+
     Collection<GameData> getGamesList();
 
     GameData getGame(int gameID);

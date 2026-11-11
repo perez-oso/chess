@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-public class MySQLDataAccess {//implements DataAccess {
+public class MySQLDataAccess implements DataAccess {
     public MySQLDataAccess() {
         try {
             configureDatabase();
@@ -44,7 +44,7 @@ public class MySQLDataAccess {//implements DataAccess {
         return null;
     }
 
-    public UserData readUser(ResultSet rs) {
+    private UserData readUser(ResultSet rs) {
         UserData userData = null;
 
         try {
@@ -75,7 +75,7 @@ public class MySQLDataAccess {//implements DataAccess {
         return null;
     }
 
-    public AuthData readAuth(ResultSet rs) {
+    private AuthData readAuth(ResultSet rs) {
         AuthData authData = null;
 
         try {
@@ -163,7 +163,7 @@ public class MySQLDataAccess {//implements DataAccess {
         return null;
     }
 
-    public GameData readGame(ResultSet rs) {
+    private GameData readGame(ResultSet rs) {
         GameData gameData = null;
 
         try {

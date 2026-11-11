@@ -11,7 +11,7 @@ public class ChessServiceTests {
 
     @Test
     void registerOneUser() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
         RegisterResult registerResult;
 
@@ -24,7 +24,7 @@ public class ChessServiceTests {
 
     @Test
     void registerDuplicateUser() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com");
         try {
             chessService.registerUser(testRegisterRequest);
@@ -35,7 +35,7 @@ public class ChessServiceTests {
 
     @Test
     void registerBadRequest() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         RegisterRequest testRegisterRequest = new RegisterRequest("Alice", null, "alicedoe@gmail.com");
         try {
             assertThrows(BadRequestException.class, () -> {chessService.registerUser(testRegisterRequest);});;
@@ -44,7 +44,7 @@ public class ChessServiceTests {
 
     @Test
     void loginRegisteredUser() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         LoginResult loginResult;
 
         try {
@@ -57,7 +57,7 @@ public class ChessServiceTests {
 
     @Test
     void loginBadRequest() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
       try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(BadRequestException.class, () -> {chessService.login(new LoginRequest(null, "pa55w0rd"));});
@@ -69,7 +69,7 @@ public class ChessServiceTests {
 
     @Test
     void loginUnauthorized() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UnauthorizedException.class, () -> {chessService.login(new LoginRequest("Alice", "animalfries42069"));});
@@ -81,7 +81,7 @@ public class ChessServiceTests {
 
     @Test
     void logoutValidAuth() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         String authToken;
 
         try {
@@ -94,7 +94,7 @@ public class ChessServiceTests {
 
     @Test
     void logoutInvalidAuth() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
        try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UnauthorizedException.class, () -> {chessService.logout(new LogoutRequest("loremipsum"));});
@@ -105,7 +105,7 @@ public class ChessServiceTests {
 
     @Test
     void createGame() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult result = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
@@ -118,7 +118,7 @@ public class ChessServiceTests {
 
     @Test
     void createGameInvalidAuth() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com"));
             assertThrows(UnauthorizedException.class,
@@ -131,7 +131,7 @@ public class ChessServiceTests {
 
     @Test
     void listNoGames() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             assertEquals(0, chessService.listGames(new ListGamesRequest(authToken)).games().size());
@@ -143,7 +143,7 @@ public class ChessServiceTests {
 
     @Test
     void joinGame() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
 
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
@@ -156,7 +156,7 @@ public class ChessServiceTests {
 
     @Test
     void joinGameBadAuth() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
@@ -171,7 +171,7 @@ public class ChessServiceTests {
 
     @Test
     void joinGameStealColor() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
@@ -185,7 +185,7 @@ public class ChessServiceTests {
 
     @Test
     void joinGameBadID() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
@@ -198,7 +198,7 @@ public class ChessServiceTests {
 
     @Test
     void listMultipleGames() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));
@@ -212,7 +212,7 @@ public class ChessServiceTests {
 
     @Test
     void clear() {
-        ChessService chessService = new ChessService(new MySQLDataAccess());
+        ChessService chessService = new ChessService(new MemoryDataAccess());
         try {
             String authToken = chessService.registerUser(new RegisterRequest("Alice", "pa55w0rd", "alicedoe@gmail.com")).authToken();
             CreateGameResult game = chessService.createGame(authToken, new CreateGameRequest("kasparov vs deep blue"));

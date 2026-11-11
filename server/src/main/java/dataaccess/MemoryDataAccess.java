@@ -23,6 +23,14 @@ public class MemoryDataAccess implements DataAccess {
         return null;
     }
 
+    public AuthData getAuth(String authToken) {
+        if (activeUsers.containsKey(authToken)) {
+            return activeUsers.get(authToken);
+        }
+
+        return null;
+    }
+
     public void createUser(UserData userData) {
         users.put(userData.username(), userData);
     }
